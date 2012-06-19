@@ -6,3 +6,8 @@ set(calibration_LIBS
 
 add_executable(calibration ${calibration_SRC})
 target_link_libraries(calibration ${calibration_LIBS})
+
+add_executable(Capture 
+	main.cpp
+)
+target_link_libraries(Capture ${OpenCV_LIBS})
