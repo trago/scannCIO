@@ -9,5 +9,7 @@ target_link_libraries(calibration ${calibration_LIBS})
 
 add_executable(Capture 
 	main.cpp
+	CameraCalibrator.cpp
+	CameraCalibrator.h
 )
 target_link_libraries(Capture ${OpenCV_LIBS})
