@@ -135,7 +135,7 @@ void CalibraCamara( );
 
      // ciclo que genera la lista de los nombres de las imagenes
      //for (int i=1; i<=9; i++) {
-     for (int i=1; i<=43; i++) {
+     for (int i=1; i<=20; i++) {
          // Se genera el nombre para cada imagen incluyendo su ruta
          stringstream str;
          //str << "IMG" << setw(2) << setfill('0') << i << ".png";
@@ -164,7 +164,6 @@ void CalibraCamara( );
          filelist,	// Lista de los nombres de las imagenes
          boardSize);	// Numero de esquinas del patron
 
-/*
      // Calibrando la camara
      // cameraCalibrator.setCalibrationFlag(true,true);
      Size size=image.size();
@@ -185,6 +184,5 @@ void CalibraCamara( );
 
      imshow("Imagen Original", image);
      //imshow("Imagen ajustada, sin distorcion", uImage);
-*/
 }
 
