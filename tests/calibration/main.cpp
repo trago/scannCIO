@@ -19,7 +19,7 @@ void CalibraCamara( );
 
      // Parametros iniciales
      int dispositivo = 0;   // 0 Para la integrada (Default)
-     char accion;
+     int accion;
 
 
      do{
@@ -27,24 +27,25 @@ void CalibraCamara( );
         cout << endl << "Presione \"1\" para calibrar la camara." << endl;
         cout << "Presione \"2\" para escanear." << endl;
         cout << "Elija una accion: ";
-        cin >> accion;
+        accion = 1;
+
+        cout << accion << endl;
 
         switch( accion ){
-        case '1':
+        case 1:
             cout << "Selecciono Calibrar" << endl;
-            CapturaCamara( dispositivo );
+            //CapturaCamara( dispositivo );
             CalibraCamara();
             break;
 
-        case '2':
+        case 2:
             cout << "Selecciono escanear" << endl;
             break;
         }
 
 
-        cout << "Para terminar presiona \"s\"... ";
-        cin >> accion;
-     }while( tolower(accion) != 's');
+     accion = cvWaitKey() & 255;
+     }while( accion != 27 );
 
 
      //tecla = cvWaitKey(100) & 255;
@@ -108,7 +109,7 @@ void CalibraCamara( );
                 stringstream cad;
                 string cadena;
 
-                cad << "im_cal/IMG" << setw(2) << setfill('0') << cont << ".png";
+                cad << "IMG" << setw(2) << setfill('0') << cont << ".png";
                 cadena = cad.str();
 
                 Mat mat = frame;
@@ -133,11 +134,12 @@ void CalibraCamara( );
      vector<string> filelist;
 
      // ciclo que genera la lista de los nombres de las imagenes
-     for (int i=1; i<=9; i++) {
-
+     //for (int i=1; i<=9; i++) {
+     for (int i=1; i<=43; i++) {
          // Se genera el nombre para cada imagen incluyendo su ruta
          stringstream str;
-         str << "im_cal/IMG0" << i << ".png";
+         //str << "IMG" << setw(2) << setfill('0') << i << ".png";
+         str << "chessboard" << setw(2) << setfill('0') << i << ".jpg";
          cout << str.str() << endl;
 
          // Se agrega el nombre al vector
@@ -155,13 +157,14 @@ void CalibraCamara( );
      CameraCalibrator cameraCalibrator;
 
      // Se especifica el numero de esquinas verticales y horizontales internas
-     Size boardSize(6,6);
+     Size boardSize(6,4);
 
      // Se abren todas las imagenes y se extraen sus puntos de las esquinas
      cameraCalibrator.addChessboardPoints(
          filelist,	// Lista de los nombres de las imagenes
          boardSize);	// Numero de esquinas del patron
 
+/*
      // Calibrando la camara
      // cameraCalibrator.setCalibrationFlag(true,true);
      Size size=image.size();
@@ -182,5 +185,6 @@ void CalibraCamara( );
 
      imshow("Imagen Original", image);
      //imshow("Imagen ajustada, sin distorcion", uImage);
+*/
 }
 
