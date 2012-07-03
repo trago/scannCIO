@@ -68,10 +68,12 @@ int CameraCalibrator::addChessboardPoints(
 
         // Dibujar las esquinas
         cv::drawChessboardCorners(image, boardSize, imageCorners, found);
+
         cv::imshow("Esquinas en el tablero", image);
         cv::waitKey(100);
-    }
 
+    }
+    cvDestroyWindow( "Esquinas en el tablero" );
 	return successes;
 }
 

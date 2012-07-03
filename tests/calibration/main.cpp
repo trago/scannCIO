@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 #include <vector>
 #include <stdio.h>
 #include <opencv2/core/core.hpp>
@@ -15,14 +16,14 @@ using namespace std;
 void CapturaCamara( int dispositivo );
 void CalibraCamara( );
 
- int main() {
+int main() {
 
-     // Parametros iniciales
-     int dispositivo = 0;   // 0 Para la integrada (Default)
-     int accion;
+    // Parametros iniciales
+    int dispositivo = 1;   // 0 Para la integrada (Default)
+    int accion;
+    ifstream archivo("conf.dat");
 
-
-     do{
+    do{
         // Menu
         cout << endl << "Presione \"1\" para calibrar la camara." << endl;
         cout << "Presione \"2\" para escanear." << endl;
@@ -35,7 +36,7 @@ void CalibraCamara( );
         case 1:
             cout << "Selecciono Calibrar" << endl;
             //CapturaCamara( dispositivo );
-            CalibraCamara();
+            CalibraCamara( );
             break;
 
         case 2:
@@ -44,16 +45,18 @@ void CalibraCamara( );
         }
 
 
-     accion = cvWaitKey() & 255;
-     }while( accion != 27 );
+        accion = cvWaitKey() & 255;
+    }while( accion != 27 );
 
 
-     //tecla = cvWaitKey(100) & 255;
+    //tecla = cvWaitKey(100) & 255;
+
+    archivo.close();
 
     return 0;
  }
 
- void CapturaCamara( int dispositivo ){
+void CapturaCamara( int dispositivo ){
      int tecla;
      int cont = 0;
 
@@ -95,7 +98,7 @@ void CalibraCamara( );
         // quitar los bits altos usando el operador AND
         tecla = cvWaitKey(100) & 255;
 
-        if( tecla == 27 || cont == 10 ){
+        if( tecla == 27 || cont == 21 ){
             // Liberar el dispositivo de captura y la memoria
             cvDestroyWindow( "Video..." );
             cvDestroyWindow( "Imagen Capturada" );
@@ -104,7 +107,7 @@ void CalibraCamara( );
         }
 
         else
-            if( tecla == 10 && cont < 10){
+            if( tecla == 10 && cont < 21){
 
                 stringstream cad;
                 string cadena;
@@ -123,9 +126,10 @@ void CalibraCamara( );
 
  }
 
- void CalibraCamara(){
+
+void CalibraCamara( ){
      // Se crea una ventana con el nombre "Image"
-     namedWindow("Imagen");
+     //namedWindow("Imagen");
 
      // Se crea una imagen vacia
      Mat image;
@@ -137,10 +141,11 @@ void CalibraCamara( );
      //for (int i=1; i<=9; i++) {
      for (int i=1; i<=20; i++) {
          // Se genera el nombre para cada imagen incluyendo su ruta
+
          stringstream str;
-         //str << "IMG" << setw(2) << setfill('0') << i << ".png";
-         str << "chessboard" << setw(2) << setfill('0') << i << ".jpg";
-         cout << str.str() << endl;
+         str << "IMG" << setw(2) << setfill('0') << i << ".png";
+         //str << "chessboard" << setw(2) << setfill('0') << i << ".jpg";
+         //cout << str.str() << endl;
 
          // Se agrega el nombre al vector
          filelist.push_back(str.str());
@@ -157,32 +162,46 @@ void CalibraCamara( );
      CameraCalibrator cameraCalibrator;
 
      // Se especifica el numero de esquinas verticales y horizontales internas
-     Size boardSize(6,4);
+     Size boardSize(8,6);
+     //Size boardSize(6,4);
 
      // Se abren todas las imagenes y se extraen sus puntos de las esquinas
      cameraCalibrator.addChessboardPoints(
          filelist,	// Lista de los nombres de las imagenes
          boardSize);	// Numero de esquinas del patron
 
+     cvDestroyWindow("Image");
+
      // Calibrando la camara
      // cameraCalibrator.setCalibrationFlag(true,true);
      Size size=image.size();
      cameraCalibrator.calibrate(size);
 
-     // Imagen sin distorcion
-     //image = cv::imread(filelist[6]);
 
-     //image = cv::imread(filelist[8]);
-     //cv::Mat uImage= cameraCalibrator.remap(image);
+     //Imagen sin distorcion
+     image = imread(filelist[17]);
+     imshow("Imagen Original", image);
+
+     Mat uImage= cameraCalibrator.remap(image);
 
      // Mostrar la Matriz de la camara
      Mat cameraMatrix= cameraCalibrator.getCameraMatrix();
+
+    ofstream archivo("conf.dat");
+
+    archivo << " Camera intrinsic: " << cameraMatrix.rows << "x" << cameraMatrix.cols << endl;
+    archivo << cameraMatrix.at<double>(0,0) << "\t\t" << cameraMatrix.at<double>(0,1) << "\t\t" << cameraMatrix.at<double>(0,2) << endl;
+    archivo << cameraMatrix.at<double>(1,0) << "\t\t" << cameraMatrix.at<double>(1,1) << "\t\t" << cameraMatrix.at<double>(1,2) << endl;
+    archivo << cameraMatrix.at<double>(2,0) << "\t\t" << cameraMatrix.at<double>(2,1) << "\t\t" << cameraMatrix.at<double>(2,2) << endl;
+
+    archivo.close();
+
+
      cout << " Camera intrinsic: " << cameraMatrix.rows << "x" << cameraMatrix.cols << endl;
      cout << cameraMatrix.at<double>(0,0) << "\t\t" << cameraMatrix.at<double>(0,1) << "\t\t" << cameraMatrix.at<double>(0,2) << endl;
      cout << cameraMatrix.at<double>(1,0) << "\t\t" << cameraMatrix.at<double>(1,1) << "\t\t" << cameraMatrix.at<double>(1,2) << endl;
      cout << cameraMatrix.at<double>(2,0) << "\t\t" << cameraMatrix.at<double>(2,1) << "\t\t" << cameraMatrix.at<double>(2,2) << endl;
 
-     imshow("Imagen Original", image);
-     //imshow("Imagen ajustada, sin distorcion", uImage);
+     imshow("Imagen ajustada, sin distorcion", uImage);
 }
 
