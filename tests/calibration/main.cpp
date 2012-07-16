@@ -9,6 +9,7 @@
 #include <opencv2/features2d/features2d.hpp>
 
 #include "CameraCalibrator.h"
+#include "linefinder.h"
 
 using namespace cv;
 using namespace std;
@@ -19,42 +20,102 @@ void CalibraCamara( );
 int main() {
 
     // Parametros iniciales
-    int dispositivo = 1;   // 0 Para la integrada (Default)
-    int accion;
-    ifstream archivo("conf.dat");
+    //int dispositivo = 1;   // 0 Para la integrada (Default)
+    //int accion;
+    //ifstream archivo("conf.dat");
 
-    do{
-        // Menu
-        cout << endl << "Presione \"1\" para calibrar la camara." << endl;
-        cout << "Presione \"2\" para escanear." << endl;
-        cout << "Elija una accion: ";
-        accion = 1;
+    // Crear instancia del detector de lineas
+    //LineFinder Buscador;
 
-        cout << accion << endl;
+    // Configurando los parametros de busqueda de lineas
+    //Buscador.setLineLengthAndGap(100,20);
+    //Buscador.setMinVote(80);
 
-        switch( accion ){
-        case 1:
-            cout << "Selecciono Calibrar" << endl;
-            //CapturaCamara( dispositivo );
-            CalibraCamara( );
-            break;
+//    do{
+        cout << "Calibrar: " << endl;
+        // CapturaCamara( dispositivo );
+        // CalibraCamara( );
 
-        case 2:
-            cout << "Selecciono escanear" << endl;
-            break;
-        }
+        // Abrir y binarizar imagen
+        Mat image = imread("PRUEBA01.png");
+        Mat imbin;
+
+        Canny( image, imbin, 125, 350 );
+
+        //imshow( "Binarizada", imbin );
+
+        cout << image.size().height << ", " << image.size().width << endl;
+
+        Matx< float, 4, 2> mapsrc;
+        Matx< float, 4, 2> mapdst;
+
+        mapsrc(0,0) = 64;
+        mapsrc(0,1) = 134;
+        mapsrc(1,0) = 63;
+        mapsrc(1,1) = 484;
+        mapsrc(2,0) = 452;
+        mapsrc(2,1) = 5;
+        mapsrc(3,0) = 445;
+        mapsrc(3,1) = 622;
+
+        mapdst(0,0) = 5;
+        mapdst(0,1) = 5;
+        mapdst(1,0) = 5;
+        mapdst(1,1) = 400;
+        mapdst(2,0) = 462;
+        mapdst(2,1) = 5;
+        mapdst(3,0) = 462;
+        mapdst(3,1) = 400;
+
+        /*
+        mapdst(0,0) = 5;
+        mapdst(0,1) = 5;
+        mapdst(1,0) = 5;
+        mapdst(1,1) = 622;
+        mapdst(2,0) = 462;
+        mapdst(2,1) = 5;
+        mapdst(3,0) = 462;
+        mapdst(3,1) = 622;
+        */
+
+        Mat imatran1, imatran2;
+        Mat mattran = getPerspectiveTransform( mapsrc, mapdst );
+        warpPerspective( image, imatran1, mattran, image.size(), CV_INTER_NN, 0 );
+        warpPerspective( image, imatran2, mattran, image.size(), WARP_INVERSE_MAP, 0 );
+
+        cvNamedWindow("Original");
+        //cvNamedWindow("Correjida");
+        imshow("Original", image);
+        imshow("Correjida1", imatran1);
+        imshow("Correjida2", imatran2);
+        cvWaitKey(0);
+
+        // Detectando y dibujando lineas
+        //vector <Vec4i> lineas = Buscador.findLines(imbin);
+        //Buscador.drawDetectedLines(image);
+
+        //imshow("Lineas detectadas con HoughP", image);
 
 
-        accion = cvWaitKey() & 255;
-    }while( accion != 27 );
+        /*
+        // No es necesario
+        Mat result;
+        flip(image,result,1); // Espejo
+        imshow("Giro", result);
+        */
 
 
-    //tecla = cvWaitKey(100) & 255;
+        //cout << "Escanear" << endl;
 
-    archivo.close();
+//        accion = cvWaitKey() & 255;
 
+//    }while( accion != 27 );
+
+
+    //archivo.close();
     return 0;
  }
+
 
 void CapturaCamara( int dispositivo ){
      int tecla;
@@ -179,10 +240,10 @@ void CalibraCamara( ){
 
 
      //Imagen sin distorcion
-     image = imread(filelist[17]);
-     imshow("Imagen Original", image);
+     //image = imread("PRUEBA01.png");
+     //imshow("Imagen Original", image);
 
-     Mat uImage= cameraCalibrator.remap(image);
+     //Mat uImage= cameraCalibrator.remap(image);
 
      // Mostrar la Matriz de la camara
      Mat cameraMatrix= cameraCalibrator.getCameraMatrix();
@@ -196,12 +257,14 @@ void CalibraCamara( ){
 
     archivo.close();
 
-
+/*
      cout << " Camera intrinsic: " << cameraMatrix.rows << "x" << cameraMatrix.cols << endl;
      cout << cameraMatrix.at<double>(0,0) << "\t\t" << cameraMatrix.at<double>(0,1) << "\t\t" << cameraMatrix.at<double>(0,2) << endl;
      cout << cameraMatrix.at<double>(1,0) << "\t\t" << cameraMatrix.at<double>(1,1) << "\t\t" << cameraMatrix.at<double>(1,2) << endl;
      cout << cameraMatrix.at<double>(2,0) << "\t\t" << cameraMatrix.at<double>(2,1) << "\t\t" << cameraMatrix.at<double>(2,2) << endl;
 
      imshow("Imagen ajustada, sin distorcion", uImage);
+     cvWaitKey();
+*/
 }
 
