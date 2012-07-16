@@ -11,5 +11,6 @@ add_executable(Capture
 	main.cpp
 	CameraCalibrator.cpp
 	CameraCalibrator.h
+	linefinder.h
 )
 target_link_libraries(Capture ${OpenCV_LIBS})
