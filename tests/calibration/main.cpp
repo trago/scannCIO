@@ -53,19 +53,19 @@ int main() {
         mapsrc(0,1) = 134;
         mapsrc(1,0) = 63;
         mapsrc(1,1) = 484;
-        mapsrc(2,0) = 452;
-        mapsrc(2,1) = 5;
-        mapsrc(3,0) = 445;
-        mapsrc(3,1) = 622;
+        mapsrc(3,0) = 452;
+        mapsrc(3,1) = 5;
+        mapsrc(2,0) = 445;
+        mapsrc(2,1) = 622;
 
         mapdst(0,0) = 5;
         mapdst(0,1) = 5;
         mapdst(1,0) = 5;
         mapdst(1,1) = 400;
-        mapdst(2,0) = 462;
-        mapdst(2,1) = 5;
-        mapdst(3,0) = 462;
-        mapdst(3,1) = 400;
+        mapdst(3,0) = 445;
+        mapdst(3,1) = 5;
+        mapdst(2,0) = 445;
+        mapdst(2,1) = 400;
 
         /*
         mapdst(0,0) = 5;
@@ -80,7 +80,7 @@ int main() {
 
         Mat imatran1, imatran2;
         Mat mattran = getPerspectiveTransform( mapsrc, mapdst );
-        warpPerspective( image, imatran1, mattran, image.size(), CV_INTER_NN, 0 );
+        warpPerspective( image, imatran1, mattran, image.size() );
         warpPerspective( image, imatran2, mattran, image.size(), WARP_INVERSE_MAP, 0 );
 
         cvNamedWindow("Original");
