@@ -46,10 +46,10 @@ bool Camara::Capture( cv::Mat imagen ){
 
     // Elegir Resolucion
     cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 1280 );
-    cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 720 );
+    cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1024 );
 
     // Crear 2 ventanas para el streaming y la imagen devuelta
-    cvNamedWindow( "Stream", CV_WINDOW_AUTOSIZE );
+    cvNamedWindow( "Stream", CV_WINDOW_NORMAL );
 
     // Ciclo infinito para stream
     while ( 1 ) {

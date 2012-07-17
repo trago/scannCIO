@@ -20,8 +20,8 @@ int main() {
     WebCam.setDispositivo(0);
 
     // Capturamos la imagen
-    //WebCam.Capture( imagen );
-    //imshow("Imagen", imagen);
+    WebCam.Capture( imagen );
+    imshow("Imagen", imagen);
 
     imagen = imread("pruebaHD.jpg",0);
     imshow("Original", imagen);
