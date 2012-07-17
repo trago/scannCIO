@@ -21,8 +21,20 @@ int main() {
 
     // Capturamos la imagen
     WebCam.Capture( imagen );
-    imshow("Imagen", imagen);
+    //imshow("Imagen", imagen);
+
+    imagen = imread("prueba00.png");
+    imshow("Original", imagen);
+
+    Mat imbin;
+    Canny( imagen, imbin, 125, 350 );
+    imshow("Canny", imbin);
+
+    Mat imbin1;
+    threshold( imbin, imbin1, 128, 255, THRESH_BINARY_INV );
+    imshow("Threshold", imbin1);
 
 
+    cvWaitKey();
     return 0;
 }

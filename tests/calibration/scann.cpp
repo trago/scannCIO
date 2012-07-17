@@ -7,12 +7,23 @@ void Camara::setDispositivo( int disp ){
     Camara::dispositivo = disp;
 }
 
+/*
+void Camara::setResolucion(int width, int height){
+    Camara.resolucion(0) = width;
+    Camara.resolucion(1) = height;
+}
+*/
 
 // Getters
 int Camara::getDispositivo(){
     return Camara::dispositivo;
 }
 
+/*
+cv::Vec2i Camara::getResolucion(){
+    return Camara.resolucion;
+}
+*/
 
 // Funcion
 bool Camara::Capture( cv::Mat imagen ){
@@ -21,7 +32,10 @@ bool Camara::Capture( cv::Mat imagen ){
     int disp = Camara::getDispositivo();
 
     // Abrir dispositivo de captura
-    CvCapture* capture = cvCaptureFromCAM( disp );
+    //CvCapture* capture = cvCaptureFromCAM( disp );
+
+    CvCapture* capture = cvCreateCameraCapture( disp );
+
 
     // Comprobar que existe el dispositivo
     if ( !capture ) {
@@ -29,6 +43,10 @@ bool Camara::Capture( cv::Mat imagen ){
         //getchar();
         return false;
     }
+
+    // Elegir Resolucion
+    cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 1280 );
+    cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 720 );
 
     // Crear 2 ventanas para el streaming y la imagen devuelta
     cvNamedWindow( "Stream", CV_WINDOW_AUTOSIZE );
@@ -57,10 +75,12 @@ bool Camara::Capture( cv::Mat imagen ){
             cv::Mat im = frame;
             im.copyTo(imagen);
             imshow("Imagen", imagen);
+            cv::imwrite("pruebaHD.jpg",imagen);
             cvWaitKey();
 
             // Liberar el dispositivo de captura y la memoria
             cvDestroyWindow( "Stream" );
+            cvDestroyWindow( "Imagen" );
             cvReleaseCapture( &capture );
 
             return true;
