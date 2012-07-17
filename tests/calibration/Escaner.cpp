@@ -17,13 +17,13 @@ int main() {
     Mat imagen;
 
     // Elegimos el Dispositivo con el cual trabajar
-    WebCam.setDispositivo(1);
+    WebCam.setDispositivo(0);
 
     // Capturamos la imagen
-    WebCam.Capture( imagen );
+    //WebCam.Capture( imagen );
     //imshow("Imagen", imagen);
 
-    imagen = imread("prueba00.png");
+    imagen = imread("pruebaHD.jpg",0);
     imshow("Original", imagen);
 
     Mat imbin;
@@ -31,7 +31,12 @@ int main() {
     imshow("Canny", imbin);
 
     Mat imbin1;
-    threshold( imbin, imbin1, 128, 255, THRESH_BINARY_INV );
+    //threshold( imagen, imbin1, 128, 255, THRESH_BINARY_INV );
+    int block_size = 91; //Debe ser un valor par
+    double C = 12.5;
+    adaptiveThreshold(imagen, imbin1, 256, ADAPTIVE_THRESH_MEAN_C,
+                      THRESH_BINARY_INV,
+                      block_size, C);
     imshow("Threshold", imbin1);
 
 
