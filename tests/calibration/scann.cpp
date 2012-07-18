@@ -75,12 +75,11 @@ bool Camara::Capture( cv::Mat imagen ){
             cv::Mat im = frame;
             im.copyTo(imagen);
             imshow("Imagen", imagen);
-            cv::imwrite("pruebaHD.jpg",imagen);
+            cv::imwrite("pruebaHD2.jpg",imagen);
             cvWaitKey();
 
             // Liberar el dispositivo de captura y la memoria
-            cvDestroyWindow( "Stream" );
-            cvDestroyWindow( "Imagen" );
+            cvDestroyAllWindows();
             cvReleaseCapture( &capture );
 
             return true;
