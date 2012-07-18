@@ -19,13 +19,13 @@ int main() {
     Mat imbin1;
 
     // Elegimos el Dispositivo con el cual trabajar
-    WebCam.setDispositivo(0);
+    WebCam.setDispositivo(1);
 
     // Capturamos la imagen
     //WebCam.Capture( imagen );
     //imshow("Imagen", imagen);
 
-    imagen = imread("pruebaHD2.jpg", 0);
+    imagen = imread("pruebaHD1.jpg", 0);
     cvNamedWindow( "Original", CV_WINDOW_NORMAL );
     imshow("Original", imagen);
 
@@ -46,16 +46,22 @@ int main() {
 
     // Extrayendo bordes
     vector< vector<Point> > bordes;
-    findContours( imbin1, bordes, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE );
+    findContours( imbin1, bordes, CV_RETR_TREE, CV_CHAIN_APPROX_NONE );
 
     // Dibujando los contornos
     Mat imborders( imagen.size(), CV_8U, Scalar(255) ); // Imagen binaria "Blanca" del tamaño de la original
-    drawContours( imborders, bordes, -1, Scalar(0), 5 );
+    //drawContours( imborders, bordes, -1, Scalar(0), 5 );
+    drawContours( imborders, bordes, 5, Scalar(0), 1 );
+
+    // Shapes Descriptors
+    Rect r0 = boundingRect( Mat(bordes[5]) );
+    rectangle( imborders, r0, Scalar(0), 2 );
+
     cvNamedWindow( "Bordes", CV_WINDOW_NORMAL );
     imshow("Bordes", imborders);
     //imwrite( "ztest.jpg", imborders );
 
-
+    //printf("%d",bordes.size());
 
     cvWaitKey();
     cvDestroyAllWindows();
