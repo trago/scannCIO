@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <stdio.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -20,13 +21,13 @@ int main() {
     Mat HSV;
 
     // Elegimos el Dispositivo con el cual trabajar
-    WebCam.setDispositivo(0);
+    //WebCam.setDispositivo(0);
 
     // Capturamos la imagen
-    WebCam.Capture( imagen );
+    //WebCam.Capture( imagen );
 
-    //imagen = imread("pruebaHD2.jpg", 0);
-    cvNamedWindow( "Original", CV_WINDOW_NORMAL );
+    imagen = imread("pruebaHD.jpg");
+    namedWindow("Original", WINDOW_NORMAL);
     imshow("Original", imagen);
 
     /*
@@ -49,33 +50,47 @@ int main() {
     imshow("Threshold", imbin1);
     */
 
-    // Threshold
-    threshold( imagen, imbin1, 50, 255, THRESH_BINARY );
-    cvNamedWindow( "Threshold", CV_WINDOW_NORMAL );
-    imshow("Threshold", imbin1);
 
-    cvtColor(imbin1, HSV, CV_BGR2HSV);
+    HSV.create(imagen.rows, imagen.cols, CV_8U);
+    cvtColor(imagen, HSV, CV_BGR2HSV);
 
     Mat H( HSV.size(), CV_8U, 1 );
     Mat S( HSV.size(), CV_8U, 1 );
     Mat V( HSV.size(), CV_8U, 1 );
 
-    cvTranspose(&HSV, &HSV);
+    Mat B( HSV.size(), CV_8U, 1 );
+    Mat G( HSV.size(), CV_8U, 1 );
+    Mat R( HSV.size(), CV_8U, 1 );
 
-    cvSplit( HSV, H, S, V, NULL );
+    std::vector<Mat > planes;
+    planes.push_back(H);
+    planes.push_back(S);
+    planes.push_back(V);
 
-    cvNamedWindow( "HSV", CV_WINDOW_NORMAL );
-    cvNamedWindow( "H", CV_WINDOW_NORMAL );
-    cvNamedWindow( "S", CV_WINDOW_NORMAL );
-    cvNamedWindow( "V", CV_WINDOW_NORMAL );
+    split( HSV, planes);
 
-    imshow( "HSV", HSV );
-    imshow( "H", HSV );
-    imshow( "S", HSV );
-    imshow( "V", HSV );
+    namedWindow("H", WINDOW_NORMAL);
+    namedWindow("S", WINDOW_NORMAL);
+    namedWindow("V", WINDOW_NORMAL);
+    imshow( "H", H );
+    imshow( "S", S );
+    imshow( "V", V );
 
+    planes.clear();
+    planes.push_back(H);
+    planes.push_back(S);
+    planes.push_back(V);
+    merge(planes, imagen);
+    cvtColor(imagen, imagen, CV_HSV2BGR);
+    namedWindow("Salida", WINDOW_NORMAL);
+    imshow("Salida", imagen);
 
-/*
+    // Threshold
+    threshold( H, imbin1, 100, 255, THRESH_BINARY );
+    cvNamedWindow( "Threshold", CV_WINDOW_NORMAL );
+    imshow("Threshold", imbin1);
+
+    /*
     // Extrayendo bordes
     vector< vector<Point> > bordes;
     findContours( imbin1, bordes, CV_RETR_TREE, CV_CHAIN_APPROX_NONE );
@@ -94,8 +109,7 @@ int main() {
     //imwrite( "ztest.jpg", imborders );
 
     //printf("%d",bordes.size());
-*/
-    cvWaitKey();
-    cvDestroyAllWindows();
+    */
+    waitKey();
     return 0;
 }
