@@ -4,7 +4,7 @@ using namespace std;
 
 // Setters
 void Camara::setDispositivo( int disp ){
-    Camara::dispositivo = disp;
+    dispositivo = disp;
 }
 
 /*
@@ -16,7 +16,7 @@ void Camara::setResolucion(int width, int height){
 
 // Getters
 int Camara::getDispositivo(){
-    return Camara::dispositivo;
+    return dispositivo;
 }
 
 /*
@@ -37,7 +37,7 @@ cv::Vec2i Camara::getResolucion(){
 bool Camara::Capture( cv::Mat& imagen ){
 
     int tecla;
-    int disp = Camara::getDispositivo();
+    int disp = getDispositivo();
 
     // Abrir dispositivo de captura
     //CvCapture* capture = cvCaptureFromCAM( disp );
@@ -116,4 +116,3 @@ bool Camara::Capture( cv::Mat& imagen ){
     }
 
 }
-
