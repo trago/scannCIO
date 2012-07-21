@@ -25,13 +25,22 @@ cv::Vec2i Camara::getResolucion(){
 }
 */
 
- void rotarImagen( cv::Mat& imagen, double angulo) {
+void rotarImagen( cv::Mat& imagen, double angulo) {
      cv::Point2f centroImg( imagen.cols / 2.0F, imagen.rows / 2.0F);
      cv::Mat mat_rot  = getRotationMatrix2D (centroImg, angulo, 1.0);
      cv::Mat temp;
      cv::warpAffine ( imagen, temp, mat_rot, imagen.size() );
      temp.copyTo(imagen);
  }
+
+int vectorMayor( std::vector< std::vector<cv::Point> >& bordes ){
+    int max = 0;
+    for( int i = 0; i<bordes.size(); i++ ){
+        if( bordes[i].size() > max )
+            max = i;
+    }
+    return max;
+}
 
 // Funcion
 bool Camara::Capture( cv::Mat& imagen ){
@@ -53,12 +62,11 @@ bool Camara::Capture( cv::Mat& imagen ){
     }
 
     // Elegir Resolucion
-    //cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 1280 );
-    //cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1024 );
-
-    // Resolucion (3264×2448 8Mpx)
     cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 1600 );
     cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1200 );
+
+    //cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 2592 );
+    //cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1944 );
 
     //cvSetCaptureProperty( capture, CV_CAP_PROP_SATURATION, 0.5 );
     //cvSetCaptureProperty( capture, CV_CAP_PROP_BRIGHTNESS, 0.5 );
