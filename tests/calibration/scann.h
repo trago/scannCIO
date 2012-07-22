@@ -20,6 +20,9 @@ class Camara{
         // Funcion que detecta la hoja en la imagen
         void DetectaHoja( cv::Mat& imagen );
 
+        // Funcion que extrae la hoja de la imagen
+        void ExtraeHoja( cv::Mat& imagen );
+
         // Funcion que procesa la imagen.
 
         // Funcion para rotar la imagen

@@ -10,6 +10,7 @@
 
 using namespace cv;
 using namespace std;
+
 Mat changeBrightContrast(Mat image, float bright, float contrast)
 {
   Mat newImage = Mat::zeros(image.size(), image.type());
@@ -26,21 +27,26 @@ int main() {
 
     // Creamos una instancia de Camara
     Camara WebCam;
+
     Mat imagen;
     Mat imbin;
     Mat imbin1;
-    Mat HSV;
 
     // Elegimos el Dispositivo con el cual trabajar
     WebCam.setDispositivo(0);
 
     // Capturamos la imagen
     WebCam.Capture( imagen );
-
     //imwrite("10MPX01.jpg", imagen);
     //imagen = imread("10MPX01.jpg");
-    namedWindow("Original", WINDOW_NORMAL);
-    imshow("Original", imagen);
+    namedWindow("Obtenida de la camara..", WINDOW_NORMAL);
+    imshow("Obtenida de la camara..", imagen);
+
+    // Recortar imagen
+    WebCam.ExtraeHoja(imagen);
+    namedWindow("Recortada..", WINDOW_NORMAL);
+    imshow("Recortada..", imagen);
+
 
     /*
     // Filtro Canny
