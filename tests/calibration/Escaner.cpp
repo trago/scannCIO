@@ -11,19 +11,6 @@
 using namespace cv;
 using namespace std;
 
-
-Mat changeBrightContrast(Mat image, float bright, float contrast)
-{
-  Mat newImage = Mat::zeros(image.size(), image.type());
-  for(int i=0; i<image.rows; i++)
-    for(int j=0; j<image.cols; j++)
-      for(int c=0; c<3; c++){
-        newImage.at<Vec3b>(i,j)[c] =
-            saturate_cast<uchar>(contrast*image.at<Vec3b>(i,j)[c] + bright);
-      }
-  return newImage;
-}
-
 int main() {
 
     // Creamos una instancia de Camara
@@ -102,6 +89,7 @@ int main() {
     //planes.push_back(S);
     //planes.push_back(V);
     //merge(planes, imagen);
+
     //cvtColor(imagen, imagen, CV_HSV2BGR);
     //namedWindow("Salida", WINDOW_NORMAL);
     //imshow("Salida", imagen);
@@ -125,17 +113,20 @@ int main() {
     Mat imborders( H.size(), CV_8U, Scalar(255) ); // Imagen binaria "Blanca" del tamaño de la original
     printf("%d", bordes.size() );
 
-    //int max = WebCam.vectorMayor(bordes);
-    //drawContours( imborders, bordes, max, Scalar(0), 1 );
-    drawContours( imborders, bordes, 118, Scalar(0), 1 );
+    int max = WebCam.vectorMayor(bordes);
+    drawContours( imborders, bordes, max, Scalar(0), 1 );
+    //drawContours( imborders, bordes, 118, Scalar(0), 1 );
 
     // Shapes Descriptors sobre capa H
-    Rect r0 = boundingRect( Mat(bordes[118]) );
-    //Rect r0 = boundingRect( max );
+    //Rect r0 = boundingRect( Mat(bordes[118]) );
+    Rect r0 = boundingRect( max );
     rectangle( imborders, r0, Scalar(0), 2 );
 
     imshow("Bordes", imborders);
-    Mat final( imborders.size(), CV_8U, Scalar(255) ); // Imagen binaria "Blanca" del tamaño de la original
+    Mat final( r0.size(), CV_8U, Scalar(255) ); // Imagen binaria "Blanca" del tamaño de la original
+
+    namedWindow("final", WINDOW_NORMAL);
+    imshow("final", final);
 
     waitKey();
     cvDestroyAllWindows();
