@@ -2,6 +2,7 @@
 #define SCANN_H
 
 #include <stdio.h>
+#include <vector>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -22,6 +23,9 @@ class Camara{
 
         // Metodo para rotar la imagen
          void rotarImagen( cv::Mat& imagen, double angulo);
+
+         // Metodo para obtener el Vector borde con mayor tamaño
+         int vectorMayor( std::vector< std::vector<cv::Point> >& bordes );
 
 
         // Setters
