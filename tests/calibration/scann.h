@@ -25,7 +25,7 @@ class Camara{
          void rotarImagen( cv::Mat& imagen, double angulo);
 
          // Metodo para obtener el Vector borde con mayor tamaño
-         int vectorMayor( std::vector< std::vector<cv::Point> >& bordes );
+         int vectorMayor( std::vector< std::vector<cv::Point_<int> > >& bordes );
 
 
         // Setters
