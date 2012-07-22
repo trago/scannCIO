@@ -111,17 +111,8 @@ int main() {
     //GaussianBlur(V, V, tam, 0.5 );
     threshold( V, V, 255, 255, THRESH_TRUNC );
     threshold( V, V, 105, 255, THRESH_BINARY );//
-
-    /*
-    // Filto Threshold adaptativo
-    int block_size = 91; //Debe ser un valor par <-?? Par o inpar??
-    double C = 12.5;
-    adaptiveThreshold(imagen, imbin1, 256, ADAPTIVE_THRESH_MEAN_C,
-                      THRESH_BINARY_INV,
-                      block_size, C);
-    */
-
     threshold( H, H, 50, 255, THRESH_BINARY );
+
     namedWindow("Canal H filtrado", WINDOW_NORMAL);
     namedWindow("Bordes", WINDOW_NORMAL);
     imshow("Canal H filtrado", H);
@@ -134,38 +125,17 @@ int main() {
     Mat imborders( H.size(), CV_8U, Scalar(255) ); // Imagen binaria "Blanca" del tamaño de la original
     printf("%d", bordes.size() );
 
-//for( int i = 0; i < bordes.size(); i++ ){
-//for( int i = bordes.size()-1; i > 0; i-- ){
-    int max = WebCam.vectorMayor(bordes);
+    //int max = WebCam.vectorMayor(bordes);
     //drawContours( imborders, bordes, max, Scalar(0), 1 );
-
     drawContours( imborders, bordes, 118, Scalar(0), 1 );
 
+    // Shapes Descriptors sobre capa H
+    Rect r0 = boundingRect( Mat(bordes[118]) );
+    //Rect r0 = boundingRect( max );
+    rectangle( imborders, r0, Scalar(0), 2 );
 
     imshow("Bordes", imborders);
-
-//    waitKey(10);
-//}
-
-
-    // Shapes Descriptors sobre capa V
-    //Rect r0 = boundingRect( Mat(bordes[5]) );
-    //rectangle( V, r0, Scalar(0), 2 );
-
-    //imwrite("10mpx_filtrada.jpg", V);
-
-    //namedWindow("Filtrada");
-    //imshow("Filtrada", V);
-
-    /*
-    // Extrayendo bordes
-    vector< vector<Point> > bordes;
-    findContours( imbin1, bordes, CV_RETR_TREE, CV_CHAIN_APPROX_NONE );
-    //imwrite( "ztest.jpg", imborders );
-    //printf("%d",bordes.size());
-    cvWaitKey();
-
-*/
+    Mat final( imborders.size(), CV_8U, Scalar(255) ); // Imagen binaria "Blanca" del tamaño de la original
 
     waitKey();
     cvDestroyAllWindows();
