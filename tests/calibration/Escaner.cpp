@@ -119,7 +119,7 @@ int main() {
 
     // Shapes Descriptors sobre capa H
     //Rect r0 = boundingRect( Mat(bordes[118]) );
-    Rect r0 = boundingRect( max );
+    Rect r0 = boundingRect( Mat(bordes[max]) );
     rectangle( imborders, r0, Scalar(0), 2 );
 
     imshow("Bordes", imborders);

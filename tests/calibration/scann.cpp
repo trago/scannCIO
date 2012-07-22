@@ -33,13 +33,18 @@ void rotarImagen( cv::Mat& imagen, double angulo) {
      temp.copyTo(imagen);
  }
 
-int vectorMayor( std::vector< std::vector<cv::Point_<int> > >& bordes ){
-    int max = 0;
-    for( int i = 0; i<bordes.size(); i++ ){
-        if( bordes[i].size() > max )
-            max = i;
+int Camara::vectorMayor( std::vector< std::vector<cv::Point_<int> > >& bordes ){
+    int M=bordes.size(), N;
+    int max = bordes[0].size();;
+    int idx = 0;
+    for( int i = 1; i<M; i++ ){
+        N = bordes[i].size();
+        if( N > max ){
+            max = N;
+            idx = i;
+        }
     }
-    return max;
+    return idx;
 }
 
 // Funcion
