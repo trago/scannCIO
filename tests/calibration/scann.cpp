@@ -25,7 +25,7 @@ cv::Vec2i Camara::getResolucion(){
 }
 */
 
-void rotarImagen( cv::Mat& imagen, double angulo) {
+void Camara::rotarImagen( cv::Mat& imagen, double angulo) {
      cv::Point2f centroImg( imagen.cols / 2.0F, imagen.rows / 2.0F);
      cv::Mat mat_rot  = getRotationMatrix2D (centroImg, angulo, 1.0);
      cv::Mat temp;
@@ -33,8 +33,10 @@ void rotarImagen( cv::Mat& imagen, double angulo) {
      temp.copyTo(imagen);
  }
 
+
+// Funcion que determina cual es el borde de mayor tamaño detectado
 int Camara::vectorMayor( std::vector< std::vector<cv::Point_<int> > >& bordes ){
-    int M=bordes.size(), N;
+    int M = bordes.size(), N;
     int max = bordes[0].size();;
     int idx = 0;
     for( int i = 1; i<M; i++ ){
@@ -47,17 +49,16 @@ int Camara::vectorMayor( std::vector< std::vector<cv::Point_<int> > >& bordes ){
     return idx;
 }
 
-// Funcion
+// Funcion que captura la image de la camara para su procesamiento
 bool Camara::Capture( cv::Mat& imagen ){
 
     int tecla;
     int disp = getDispositivo();
 
-    // Abrir dispositivo de captura
-    //CvCapture* capture = cvCaptureFromCAM( disp );
-
+    // Abrir dispositivo de captura, se puede usar la linea siguiente pero con ella
+    // no podemos manipular los parametros de la camara por eso se usa cvCreateCameraCapture()
+    // CvCapture* capture = cvCaptureFromCAM( disp );
     CvCapture* capture = cvCreateCameraCapture( disp );
-
 
     // Comprobar que existe el dispositivo
     if ( !capture ) {
@@ -66,18 +67,15 @@ bool Camara::Capture( cv::Mat& imagen ){
         return false;
     }
 
-    // Elegir Resolucion
+    // Elegir Resolucion (1600 x 1200)
     cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 1600 );
     cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1200 );
 
-    //cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 2592 );
-    //cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1944 );
-
-    //cvSetCaptureProperty( capture, CV_CAP_PROP_SATURATION, 0.5 );
-    //cvSetCaptureProperty( capture, CV_CAP_PROP_BRIGHTNESS, 0.5 );
-    //cvSetCaptureProperty( capture, CV_CAP_PROP_CONTRAST, 0.7 );
-   /*
-
+    /*
+    // Otro Parametros
+    cvSetCaptureProperty( capture, CV_CAP_PROP_SATURATION, 0.5 );
+    cvSetCaptureProperty( capture, CV_CAP_PROP_BRIGHTNESS, 0.5 );
+    cvSetCaptureProperty( capture, CV_CAP_PROP_CONTRAST, 0.7 );
     cvSetCaptureProperty( capture, CV_CAP_PROP_HUE, 0.5 );
     cvSetCaptureProperty( capture, CV_CAP_PROP_GAIN, 0.5 );
     cvSetCaptureProperty( capture, CV_CAP_PROP_EXPOSURE, 0.7 );
@@ -85,47 +83,92 @@ bool Camara::Capture( cv::Mat& imagen ){
     cvSetCaptureProperty( capture, CV_CAP_PROP_RECTIFICATION, 0.5 );
     cvSetCaptureProperty( capture, CV_CAP_PROP_GAIN, 0.5 );
     */
-    //printf("%f", cvGetCaptureProperty(capture, CV_CAP_PROP_GAIN) );
 
-    //cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 2448 );
-
-
-    // Crear 2 ventanas para el streaming y la imagen devuelta
-    cvNamedWindow( "Stream", CV_WINDOW_NORMAL);//  CV_WINDOW_AUTOSIZE);
+    // Crear ventana para el streaming
+    cvNamedWindow( "Press enter to capture...", CV_WINDOW_NORMAL);//  CV_WINDOW_AUTOSIZE);
 
     // Ciclo infinito para stream
     while ( 1 ) {
         // Obtener imagen (frame)
         IplImage* frame = cvQueryFrame( capture );
 
-        // Comprobar
+        // Comprobar si se obtiene o no la imagen
         if ( !frame ) {
             //fprintf( stderr, "ERROR: frame is null...\n" );
             // Liberar el dispositivo de captura y la memoria
-            cvDestroyWindow( "Stream" );
+            cvDestroyAllWindows();
             cvReleaseCapture( &capture );
             //getchar();
             return false;
         }
 
-        cvShowImage( "Stream", frame );
+        // Falta rotar la imagen... OPCIONAL
+
+        // Se detecta la imagen frente a la camara
+        cv::Mat im = frame;
+        DetectaHoja(im);
+
+        // Se muestra la imagen en la ventana
+        cvShowImage( "Press enter to capture...", frame );
 
         // Al presionar una tecla quitar los bits altos usando el operador AND
         tecla = cvWaitKey(100) & 255;
 
+        // Si se presiona la tecla enter...
         if( tecla == 10 ){
-            cv::Mat im = frame;
+            // Guardar en la imagen pasada como parametro
+            im = cvQueryFrame( capture );
             im.copyTo(imagen);
-            //imshow("Imagen", imagen);
-            cv::imwrite("pruebaHD2.jpg",imagen);
-            //cvWaitKey();
 
             // Liberar el dispositivo de captura y la memoria
             cvDestroyAllWindows();
             cvReleaseCapture( &capture );
-
             return true;
        }
     }
 
+}
+
+// Funcion que detecta la hoja en la imagen
+void Camara::DetectaHoja( cv::Mat& imagen ){
+
+    // Creando matriz HSV con las dimensiones de la imagen
+    cv::Mat HSV;
+    HSV.create(imagen.rows, imagen.cols, CV_8U);
+
+    // Convirtiendo la imagen de BGR a HSV
+    cvtColor(imagen, HSV, CV_BGR2HSV);
+
+    // Creando una Matriz para cada canal
+    cv::Mat H( HSV.size(), CV_8U, 1 );
+    cv::Mat S( HSV.size(), CV_8U, 1 );
+    cv::Mat V( HSV.size(), CV_8U, 1 );
+
+    // Creando un vector con los canales
+    std::vector<cv::Mat> planes;
+    planes.push_back(H);
+    planes.push_back(S);
+    planes.push_back(V);
+
+    // Separando los canales
+    split( HSV, planes);
+
+    cv::threshold( V, V, 255, 255, cv::THRESH_TRUNC );
+    cv::threshold( V, V, 105, 255, cv::THRESH_BINARY );//
+    cv::threshold( H, H, 50, 255, cv::THRESH_BINARY );
+
+    // Extrayendo bordes a la capa H binarizada
+    vector< vector<cv::Point> > bordes;
+    findContours( H, bordes, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE );
+
+    // Dibujando los contornos sobre la capa V
+    cv::Mat imborders( H.size(), CV_8U, cv::Scalar(255) ); // Imagen binaria "Blanca" del tamaño de la original
+
+    int max = vectorMayor(bordes);
+    drawContours( imborders, bordes, max, cv::Scalar(0), 1 );
+
+    // Shapes Descriptors sobre capa H
+    cv::Rect r0 = cv::boundingRect( cv::Mat(bordes[max]) );
+    //rectangle( imborders, r0, Scalar(0), 2 );
+    rectangle( imagen, r0, cv::Scalar(255), 2 );
 }

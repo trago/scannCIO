@@ -13,20 +13,20 @@ class Camara{
         cv::Vec2i resolucion;
 
     public:
-        // Metodo para obtener una imagen ya procesada de una web cam.
-        //cv::Mat GetImage();
 
-        // Metodo para capturar la imagen, devuelve una imagen.
+        // Funcion que captura la image de la camara para su procesamiento
         bool Capture( cv::Mat& imagen );
 
-        // Metodo que procesa la imagen.
+        // Funcion que detecta la hoja en la imagen
+        void DetectaHoja( cv::Mat& imagen );
 
-        // Metodo para rotar la imagen
+        // Funcion que procesa la imagen.
+
+        // Funcion para rotar la imagen
          void rotarImagen( cv::Mat& imagen, double angulo);
 
-         // Metodo para obtener el Vector borde con mayor tamaño
+         // Funcion que determina cual es el borde de mayor tamaño detectado
          int vectorMayor( std::vector< std::vector<cv::Point_<int> > >& bordes );
-
 
         // Setters
         void setDispositivo( int disp );
