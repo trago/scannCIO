@@ -10,6 +10,17 @@
 
 using namespace cv;
 using namespace std;
+Mat changeBrightContrast(Mat image, float bright, float contrast)
+{
+  Mat newImage = Mat::zeros(image.size(), image.type());
+  for(int i=0; i<image.rows; i++)
+    for(int j=0; j<image.cols; j++)
+      for(int c=0; c<3; c++){
+        newImage.at<Vec3b>(i,j)[c] =
+            saturate_cast<uchar>(contrast*image.at<Vec3b>(i,j)[c] + bright);
+      }
+  return newImage;
+}
 
 int main() {
 
