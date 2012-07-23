@@ -105,8 +105,10 @@ bool Camara::Capture( cv::Mat& imagen ){
         // Falta rotar la imagen... OPCIONAL
 
         // Se detecta la imagen frente a la camara
+        cv::Rect borde;
         cv::Mat im = frame;
-        DetectaHoja(im);
+        BordeHoja(im, borde);
+        rectangle( im, borde, cv::Scalar(255), 2 );
 
         // Se muestra la imagen en la ventana
         cvShowImage( "Press enter to capture...", frame );
@@ -130,7 +132,7 @@ bool Camara::Capture( cv::Mat& imagen ){
 }
 
 // Funcion que detecta la hoja en la imagen
-void Camara::DetectaHoja( cv::Mat& imagen ){
+void Camara::BordeHoja( cv::Mat& imagen, cv::Rect& borde ){
 
     // Creando matriz HSV con las dimensiones de la imagen
     cv::Mat HSV;
@@ -168,55 +170,18 @@ void Camara::DetectaHoja( cv::Mat& imagen ){
     drawContours( imborders, bordes, max, cv::Scalar(0), 1 );
 
     // Shapes Descriptors sobre capa H
-    cv::Rect r0 = cv::boundingRect( cv::Mat(bordes[max]) );
-    //rectangle( imborders, r0, Scalar(0), 2 );
-    rectangle( imagen, r0, cv::Scalar(255), 2 );
+    borde = cv::boundingRect( cv::Mat(bordes[max]) );
+    //rectangle( imborders, borde, Scalar(0), 2 );
 }
 
 // Funcion que extrae la hoja de la imagen
 void Camara::ExtraeHoja( cv::Mat& imagen ){
 
-    // Creando matriz HSV con las dimensiones de la imagen
-    cv::Mat HSV;
-    HSV.create(imagen.rows, imagen.cols, CV_8U);
-
-    // Convirtiendo la imagen de BGR a HSV
-    cvtColor(imagen, HSV, CV_BGR2HSV);
-
-    // Creando una Matriz para cada canal
-    cv::Mat H( HSV.size(), CV_8U, 1 );
-    cv::Mat S( HSV.size(), CV_8U, 1 );
-    cv::Mat V( HSV.size(), CV_8U, 1 );
-
-    // Creando un vector con los canales
-    std::vector<cv::Mat> planes;
-    planes.push_back(H);
-    planes.push_back(S);
-    planes.push_back(V);
-
-    // Separando los canales
-    split( HSV, planes);
-
-    cv::threshold( V, V, 255, 255, cv::THRESH_TRUNC );
-    cv::threshold( V, V, 105, 255, cv::THRESH_BINARY );//
-    cv::threshold( H, H, 50, 255, cv::THRESH_BINARY );
-
-    // Extrayendo bordes a la capa H binarizada
-    vector< vector<cv::Point> > bordes;
-    findContours( H, bordes, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE );
-
-    // Dibujando los contornos sobre la capa V
-    cv::Mat imborders( H.size(), CV_8U, cv::Scalar(255) ); // Imagen binaria "Blanca" del tamaño de la original
-
-    int max = vectorMayor(bordes);
-    drawContours( imborders, bordes, max, cv::Scalar(0), 1 );
-
-    // Shapes Descriptors sobre capa H
-    cv::Rect r0 = cv::boundingRect( cv::Mat(bordes[max]) );
-    //rectangle( imagen, r0, cv::Scalar(255), 2 );
+    cv::Rect borde;
+    BordeHoja(imagen, borde);
 
     // Recortando la imagen al tamaño indicado
-    cv::Mat image_roi = imagen(r0);
+    cv::Mat image_roi = imagen(borde);
 
     image_roi.copyTo(imagen);
 }

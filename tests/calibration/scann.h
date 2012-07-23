@@ -18,7 +18,7 @@ class Camara{
         bool Capture( cv::Mat& imagen );
 
         // Funcion que detecta la hoja en la imagen
-        void DetectaHoja( cv::Mat& imagen );
+        void BordeHoja( cv::Mat& imagen, cv::Rect& borde );
 
         // Funcion que extrae la hoja de la imagen
         void ExtraeHoja( cv::Mat& imagen );
