@@ -33,11 +33,11 @@ int main() {
     Mat imbin1;
 
     // Elegimos el Dispositivo con el cual trabajar
-    WebCam.setDispositivo(0);
+    WebCam.setDispositivo(1);
 
     // Capturamos la imagen
     WebCam.Capture( imagen );
-    //imwrite("10MPX01.jpg", imagen);
+    //imwrite("30MPX01.jpg", imagen);
     //imagen = imread("10MPX01.jpg");
     namedWindow("Obtenida de la camara..", WINDOW_NORMAL);
     imshow("Obtenida de la camara..", imagen);

@@ -215,6 +215,8 @@ void Camara::ExtraeHoja( cv::Mat& imagen ){
     cv::Rect r0 = cv::boundingRect( cv::Mat(bordes[max]) );
     //rectangle( imagen, r0, cv::Scalar(255), 2 );
 
-    //Point a cv::Mat header at it (no allocation is done)
-    imagen(r0);
+    // Recortando la imagen al tamaño indicado
+    cv::Mat image_roi = imagen(r0);
+
+    image_roi.copyTo(imagen);
 }
