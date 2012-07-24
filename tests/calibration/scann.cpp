@@ -145,6 +145,8 @@ void Camara::BordeHoja( cv::Mat& imagen, cv::Rect& borde )
 
   // Creando matriz HSV con las dimensiones de la imagen
   cv::Mat HSV;
+  cv::Mat temp;
+
   HSV.create(imagen.rows, imagen.cols, CV_8U);
 
   // Convirtiendo la imagen de BGR a HSV
@@ -164,9 +166,18 @@ void Camara::BordeHoja( cv::Mat& imagen, cv::Rect& borde )
   // Separando los canales
   split( HSV, planes);
 
-  cv::threshold( V, V, 255, 255, cv::THRESH_TRUNC );
-  cv::threshold( V, V, 105, 255, cv::THRESH_BINARY );//
-  cv::threshold( H, H, 50, 255, cv::THRESH_BINARY );
+  // Binarizando
+  H.copyTo(temp);
+  //changeBrightContrast(temp,H, 12, 1.8);
+  //cv::threshold( H, H, 1, 255, cv::THRESH_BINARY );
+
+  // Filto Threshold adaptativo
+  int block_size = 31; //Debe ser un valor par <-?? Par o inpar??
+  double C = 5;//12.5;
+  cv::adaptiveThreshold(H, temp, 256, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, block_size, C);
+
+  cvNamedWindow("Binarizada", CV_WINDOW_NORMAL);
+  cv::imshow("Binarizada", temp);
 
   // Extrayendo bordes a la capa H binarizada
   vector< vector<cv::Point> > bordes;

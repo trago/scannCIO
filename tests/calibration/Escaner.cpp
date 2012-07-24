@@ -21,12 +21,13 @@ int main() {
     Mat imbin1;
 
     // Elegimos el Dispositivo con el cual trabajar
-    WebCam.setDispositivo(1);
+    WebCam.setDispositivo(0);
+
 
     // Capturamos la imagen
-    //WebCam.Capture( imagen );
-    //imwrite("30MPX01.jpg", imagen);
-    imagen = imread("10MPX01.jpg");
+    WebCam.Capture( imagen );
+    imwrite("240712.jpg", imagen);
+    //imagen = imread("10MPX01.jpg");
     namedWindow("Obtenida de la camara..", WINDOW_NORMAL);
     imshow("Obtenida de la camara..", imagen);
 
@@ -40,6 +41,7 @@ int main() {
     WebCam.ProcesaImagen( imagen, im2 );
     namedWindow("Editada..", WINDOW_NORMAL);
     imshow("Editada..", im2);
+    imwrite("240712_ED.jpg", im2);
 
 
 
