@@ -209,25 +209,39 @@ void Camara::ProcesaImagen( cv::Mat imagen, cv::Mat &im_res )
     */
 
   // Filto Threshold adaptativo
-  int block_size = 91; //Debe ser un valor par <-?? Par o inpar??
-  double C = 12.5;
+  //int block_size = 91; //Debe ser un valor par <-?? Par o inpar??
+  //double C = 12.5;
   //cv::adaptiveThreshold(imagen, im2, 256, cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY_INV, block_size, C);
-  cv::threshold( imagen, im_res, 128, 255, cv::THRESH_BINARY );
+  //cv::threshold( imagen, im_res, 128, 255, cv::THRESH_BINARY );
 
-  changeBrightContrast(imagen, im_res, 70, 1.5);
+  cv::Mat aux_imagen;
+  cv::cvtColor(imagen, aux_imagen, CV_BGR2GRAY);
+  cv::cvtColor(imagen, im_res, CV_BGR2GRAY);
+  cv::GaussianBlur(aux_imagen, aux_imagen, cv::Size(151,151), 0);
+  aux_imagen = im_res - aux_imagen;
+  //cv::normalize(aux_imagen, aux_imagen, 0, 255, cv::NORM_MINMAX);
+  cv::equalizeHist(aux_imagen, aux_imagen);
+  changeBrightContrast(aux_imagen, im_res, 20, 4.);
 }
 
 // Funcion para modicar el brillo y contraste
 void Camara::changeBrightContrast(cv::Mat image, cv::Mat &im_res, float bright, float contrast)
 {
   cv::Mat newImage = cv::Mat::zeros(image.size(), image.type());
-  for(int i=0; i<image.rows; i++)
-    for(int j=0; j<image.cols; j++)
-      for(int c=0; c<3; c++){
-        newImage.at<cv::Vec3b>(i,j)[c] =
-            cv::saturate_cast<uchar>(contrast*image.at<cv::Vec3b>(i,j)[c] +
-                                     bright);
-      }
+  if(image.channels() == 3)
+    for(int i=0; i<image.rows; i++)
+      for(int j=0; j<image.cols; j++)
+        for(int c=0; c<3; c++){
+          newImage.at<cv::Vec3b>(i,j)[c] =
+              cv::saturate_cast<uchar>(contrast*image.at<cv::Vec3b>(i,j)[c] +
+                                       bright);
+        }
+  else if(image.channels() == 1)
+    for(int i=0; i<image.rows; i++)
+      for(int j=0; j<image.cols; j++)
+          newImage.at<uchar>(i,j) =
+              cv::saturate_cast<uchar>(contrast*image.at<uchar>(i,j) +
+                                       bright);
 
   newImage.copyTo(im_res);
 }
