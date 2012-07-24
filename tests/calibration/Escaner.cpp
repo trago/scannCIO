@@ -24,9 +24,9 @@ int main() {
     WebCam.setDispositivo(1);
 
     // Capturamos la imagen
-    WebCam.Capture( imagen );
+    //WebCam.Capture( imagen );
     //imwrite("30MPX01.jpg", imagen);
-    //imagen = imread("10MPX01.jpg");
+    imagen = imread("10MPX01.jpg");
     namedWindow("Obtenida de la camara..", WINDOW_NORMAL);
     imshow("Obtenida de la camara..", imagen);
 
