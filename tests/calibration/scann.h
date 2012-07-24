@@ -24,8 +24,12 @@ class Camara{
         void ExtraeHoja( cv::Mat& imagen );
 
         // Funcion que procesa la imagen.
+        void ProcesaImagen( cv::Mat imagen, cv::Mat &im_res );
 
-        // Funcion para rotar la imagen
+        // Funcion para modicar el brillo y contraste
+        void changeBrightContrast(cv::Mat image, cv::Mat &im_res, float bright, float contrast);
+
+        // Funcion para rotar la imagen +pendiente+
          void rotarImagen( cv::Mat& imagen, double angulo);
 
          // Funcion que determina cual es el borde de mayor tamaño detectado
@@ -41,3 +45,4 @@ class Camara{
 };
 
 #endif // SCANN_H
+

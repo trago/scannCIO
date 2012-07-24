@@ -185,3 +185,36 @@ void Camara::ExtraeHoja( cv::Mat& imagen ){
 
     image_roi.copyTo(imagen);
 }
+
+// Funcion que procesa la imagen.
+void Camara::ProcesaImagen( cv::Mat imagen, cv::Mat &im_res ){
+
+    /*
+    // Filtro Canny
+    Canny( imagen, imbin, 125, 350 );
+    threshold( imagen, imbin1, 128, 255, THRESH_BINARY );
+    imshow("Canny", imbin1);
+    imwrite( "canny.jpg", imbin1 );
+    */
+
+    // Filto Threshold adaptativo
+    int block_size = 91; //Debe ser un valor par <-?? Par o inpar??
+    double C = 12.5;
+    //cv::adaptiveThreshold(imagen, im2, 256, cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY_INV, block_size, C);
+    cv::threshold( imagen, im_res, 128, 255, cv::THRESH_BINARY );
+
+    changeBrightContrast(imagen, im_res, 10, 1.0);
+}
+
+// Funcion para modicar el brillo y contraste
+void Camara::changeBrightContrast(cv::Mat image, cv::Mat &im_res, float bright, float contrast)
+{
+    cv::Mat newImage = cv::Mat::zeros(image.size(), image.type());
+    for(int i=0; i<image.rows; i++)
+        for(int j=0; j<image.cols; j++)
+            for(int c=0; c<3; c++){
+                newImage.at<cv::Vec3b>(i,j)[c] = cv::saturate_cast<uchar>(contrast*image.at<cv::Vec3b>(i,j)[c] + bright);
+            }
+
+    newImage.copyTo(im_res);
+}
