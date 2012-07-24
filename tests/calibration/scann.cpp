@@ -168,26 +168,27 @@ void Camara::BordeHoja( cv::Mat& imagen, cv::Rect& borde )
 
   // Binarizando
   H.copyTo(temp);
-  //changeBrightContrast(temp,H, 12, 1.8);
+  changeBrightContrast(H, H, 15, 3);
   //cv::threshold( H, H, 1, 255, cv::THRESH_BINARY );
 
   // Filto Threshold adaptativo
   int block_size = 31; //Debe ser un valor par <-?? Par o inpar??
-  double C = 5;//12.5;
-  cv::adaptiveThreshold(H, temp, 256, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, block_size, C);
+  double C = 2.5;//12.5;
+  cv::adaptiveThreshold(H, H, 256, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, block_size, C);
 
-  cvNamedWindow("Binarizada", CV_WINDOW_NORMAL);
-  cv::imshow("Binarizada", temp);
 
   // Extrayendo bordes a la capa H binarizada
   vector< vector<cv::Point> > bordes;
   findContours( H, bordes, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE );
 
-  // Dibujando los contornos sobre la capa V
+  // Dibujando los contornos sobre la capa H
   cv::Mat imborders( H.size(), CV_8U, cv::Scalar(255) ); // Imagen binaria "Blanca" del tamaño de la original
 
   int max = vectorMayor(bordes);
   drawContours( imborders, bordes, max, cv::Scalar(0), 1 );
+
+  //cvNamedWindow("Bordes", CV_WINDOW_NORMAL);
+  //cv::imshow("Bordes", imborders);
 
   // Shapes Descriptors sobre capa H
   borde = cv::boundingRect( cv::Mat(bordes[max]) );

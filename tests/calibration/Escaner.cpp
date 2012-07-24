@@ -21,7 +21,7 @@ int main() {
     Mat imbin1;
 
     // Elegimos el Dispositivo con el cual trabajar
-    WebCam.setDispositivo(0);
+    WebCam.setDispositivo(1);
 
 
     // Capturamos la imagen
