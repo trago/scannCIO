@@ -30,13 +30,22 @@ cv::Vec2i Camara::getResolucion(){
 }
 */
 
-void Camara::rotarImagen( cv::Mat& imagen, double angulo)
+void Camara::rotarImagen( cv::Mat& imagen, double angulo )
 {
-  cv::Point2f centroImg( imagen.cols / 2.0F, imagen.rows / 2.0F);
-  cv::Mat mat_rot  = getRotationMatrix2D (centroImg, angulo, 1.0);
-  cv::Mat temp;
-  cv::warpAffine ( imagen, temp, mat_rot, imagen.size() );
-  temp.copyTo(imagen);
+    /*
+    cv::Mat Img( imagen.cols, imagen.rows, imagen.type() );
+
+    printf("%d x %d => %d x %d", imagen.size().height, imagen.size().width, Img.size().height, Img.size().width );
+
+    cv::Point2f centroImg( imagen.cols / 2.0F, imagen.rows / 2.0F );
+    cv::Mat mat_rot  = getRotationMatrix2D (centroImg, angulo, 1.0);
+
+    cv::warpAffine ( imagen, Img, mat_rot, Img.size() );
+
+    //cvNamedWindow("Rotada", CV_WINDOW_NORMAL);
+    //cv::imshow("Rotada", Img);
+    Img.copyTo(imagen);
+    */
 }
 
 
@@ -76,8 +85,11 @@ bool Camara::Capture( cv::Mat& imagen )
   }
 
   // Elegir Resolucion (1600 x 1200)
-  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 1600 );
-  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1200 );
+//  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 1600 );
+//  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1200 );
+  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 2592 );
+  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1944 );
+
 
   /*
     // Otro Parametros
@@ -211,29 +223,14 @@ void Camara::ExtraeHoja( cv::Mat& imagen )
 // Funcion que procesa la imagen.
 void Camara::ProcesaImagen( cv::Mat imagen, cv::Mat &im_res )
 {
-
-  /*
-    // Filtro Canny
-    Canny( imagen, imbin, 125, 350 );
-    threshold( imagen, imbin1, 128, 255, THRESH_BINARY );
-    imshow("Canny", imbin1);
-    imwrite( "canny.jpg", imbin1 );
-    */
-
-  // Filto Threshold adaptativo
-  //int block_size = 91; //Debe ser un valor par <-?? Par o inpar??
-  //double C = 12.5;
-  //cv::adaptiveThreshold(imagen, im2, 256, cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY_INV, block_size, C);
-  //cv::threshold( imagen, im_res, 128, 255, cv::THRESH_BINARY );
-
-  cv::Mat aux_imagen;
-  cv::cvtColor(imagen, aux_imagen, CV_BGR2GRAY);
-  cv::cvtColor(imagen, im_res, CV_BGR2GRAY);
-  cv::GaussianBlur(aux_imagen, aux_imagen, cv::Size(151,151), 0);
-  aux_imagen = im_res - aux_imagen;
-  //cv::normalize(aux_imagen, aux_imagen, 0, 255, cv::NORM_MINMAX);
-  cv::equalizeHist(aux_imagen, aux_imagen);
-  changeBrightContrast(aux_imagen, im_res, 20, 4.);
+    cv::Mat aux_imagen;
+    cv::cvtColor(imagen, aux_imagen, CV_BGR2GRAY);
+    cv::cvtColor(imagen, im_res, CV_BGR2GRAY);
+    cv::GaussianBlur(aux_imagen, aux_imagen, cv::Size(151,151), 0);
+    aux_imagen = im_res - aux_imagen;
+    //cv::normalize(aux_imagen, aux_imagen, 0, 255, cv::NORM_MINMAX);
+    cv::equalizeHist(aux_imagen, aux_imagen);
+    changeBrightContrast(aux_imagen, im_res, 20, 4.);
 }
 
 // Funcion para modicar el brillo y contraste
@@ -256,4 +253,40 @@ void Camara::changeBrightContrast(cv::Mat image, cv::Mat &im_res, float bright, 
                                        bright);
 
   newImage.copyTo(im_res);
+}
+
+
+bool Camara::GetImage( cv::Mat& imagen, int modo, std::string r_imagen ){
+
+    if( modo < 0 ){
+
+        if( r_imagen.empty() ){
+            return false;
+        }
+        else {
+            imagen = cv::imread(r_imagen);
+        }
+    }
+    else {
+        setDispositivo( modo );
+        Capture(imagen);
+    }
+
+    cv::namedWindow("Original..", CV_WINDOW_NORMAL);
+    cv::imshow("Original..", imagen);
+
+    // Edicion de imagen
+    cv::Mat im2;
+    ExtraeHoja(imagen);
+    rotarImagen(imagen, 90);
+    ProcesaImagen( imagen, im2 );
+
+    im2.copyTo(imagen);
+
+    cv::namedWindow("Editada..", CV_WINDOW_NORMAL);
+    cv::imshow("Editada..", im2);
+
+    cv::waitKey();
+    cvDestroyAllWindows();
+    return true;
 }
