@@ -30,13 +30,22 @@ cv::Vec2i Camara::getResolucion(){
 }
 */
 
-void Camara::rotarImagen( cv::Mat& imagen, double angulo)
+void Camara::rotarImagen( cv::Mat& imagen, double angulo )
 {
-  cv::Point2f centroImg( imagen.cols / 2.0F, imagen.rows / 2.0F);
-  cv::Mat mat_rot  = getRotationMatrix2D (centroImg, angulo, 1.0);
-  cv::Mat temp;
-  cv::warpAffine ( imagen, temp, mat_rot, imagen.size() );
-  temp.copyTo(imagen);
+    /*
+    cv::Mat Img( imagen.cols, imagen.rows, imagen.type() );
+
+    printf("%d x %d => %d x %d", imagen.size().height, imagen.size().width, Img.size().height, Img.size().width );
+
+    cv::Point2f centroImg( imagen.cols / 2.0F, imagen.rows / 2.0F );
+    cv::Mat mat_rot  = getRotationMatrix2D (centroImg, angulo, 1.0);
+
+    cv::warpAffine ( imagen, Img, mat_rot, Img.size() );
+
+    //cvNamedWindow("Rotada", CV_WINDOW_NORMAL);
+    //cv::imshow("Rotada", Img);
+    Img.copyTo(imagen);
+    */
 }
 
 
@@ -76,8 +85,11 @@ bool Camara::Capture( cv::Mat& imagen )
   }
 
   // Elegir Resolucion (1600 x 1200)
-  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 1600 );
-  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1200 );
+//  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 1600 );
+//  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1200 );
+  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 2592 );
+  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1944 );
+
 
   /*
     // Otro Parametros
@@ -145,6 +157,8 @@ void Camara::BordeHoja( cv::Mat& imagen, cv::Rect& borde )
 
   // Creando matriz HSV con las dimensiones de la imagen
   cv::Mat HSV;
+  cv::Mat temp;
+
   HSV.create(imagen.rows, imagen.cols, CV_8U);
 
   // Convirtiendo la imagen de BGR a HSV
@@ -164,19 +178,29 @@ void Camara::BordeHoja( cv::Mat& imagen, cv::Rect& borde )
   // Separando los canales
   split( HSV, planes);
 
-  cv::threshold( V, V, 255, 255, cv::THRESH_TRUNC );
-  cv::threshold( V, V, 105, 255, cv::THRESH_BINARY );//
-  cv::threshold( H, H, 50, 255, cv::THRESH_BINARY );
+  // Binarizando
+  H.copyTo(temp);
+  changeBrightContrast(H, H, 15, 3);
+  //cv::threshold( H, H, 1, 255, cv::THRESH_BINARY );
+
+  // Filto Threshold adaptativo
+  int block_size = 31; //Debe ser un valor par <-?? Par o inpar??
+  double C = 2.5;//12.5;
+  cv::adaptiveThreshold(H, H, 256, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, block_size, C);
+
 
   // Extrayendo bordes a la capa H binarizada
   vector< vector<cv::Point> > bordes;
   findContours( H, bordes, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE );
 
-  // Dibujando los contornos sobre la capa V
+  // Dibujando los contornos sobre la capa H
   cv::Mat imborders( H.size(), CV_8U, cv::Scalar(255) ); // Imagen binaria "Blanca" del tamaño de la original
 
   int max = vectorMayor(bordes);
   drawContours( imborders, bordes, max, cv::Scalar(0), 1 );
+
+  //cvNamedWindow("Bordes", CV_WINDOW_NORMAL);
+  //cv::imshow("Bordes", imborders);
 
   // Shapes Descriptors sobre capa H
   borde = cv::boundingRect( cv::Mat(bordes[max]) );
@@ -199,7 +223,6 @@ void Camara::ExtraeHoja( cv::Mat& imagen )
 // Funcion que procesa la imagen.
 void Camara::ProcesaImagen( cv::Mat imagen, cv::Mat &im_res )
 {
-
   /*
     // Filtro Canny
     Canny( imagen, imbin, 125, 350 );
@@ -245,4 +268,40 @@ void Camara::changeBrightContrast(cv::Mat image, cv::Mat &im_res, float bright, 
                                        bright);
 
   newImage.copyTo(im_res);
+}
+
+
+bool Camara::GetImage( cv::Mat& imagen, int modo, std::string r_imagen ){
+
+    if( modo < 0 ){
+
+        if( r_imagen.empty() ){
+            return false;
+        }
+        else {
+            imagen = cv::imread(r_imagen);
+        }
+    }
+    else {
+        setDispositivo( modo );
+        Capture(imagen);
+    }
+
+    cv::namedWindow("Original..", CV_WINDOW_NORMAL);
+    cv::imshow("Original..", imagen);
+
+    // Edicion de imagen
+    cv::Mat im2;
+    ExtraeHoja(imagen);
+    rotarImagen(imagen, 90);
+    ProcesaImagen( imagen, im2 );
+
+    im2.copyTo(imagen);
+
+    cv::namedWindow("Editada..", CV_WINDOW_NORMAL);
+    cv::imshow("Editada..", im2);
+
+    cv::waitKey();
+    cvDestroyAllWindows();
+    return true;
 }

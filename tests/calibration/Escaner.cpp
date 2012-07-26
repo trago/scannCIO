@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <stdio.h>
+#include <string.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -17,16 +18,12 @@ int main() {
     Camara WebCam;
 
     Mat imagen;
-    Mat imbin;
-    Mat imbin1;
+    String r_imagen = "240712.jpg";
 
-    // Elegimos el Dispositivo con el cual trabajar
-    WebCam.setDispositivo(1);
+    // Funcion que obtiene la imagen de la camara
+    WebCam.GetImage( imagen, 1 );
 
-    // Capturamos la imagen
-    //WebCam.Capture( imagen );
-    //imwrite("30MPX01.jpg", imagen);
-    imagen = imread("10MPX01.jpg");
+    //imagen = imread("10MPX01.jpg");
     if (imagen.empty()) {
         cout << "No se pudo abrir el archivo"<<endl;
         return 1;
@@ -34,20 +31,5 @@ int main() {
     namedWindow("Obtenida de la camara..", WINDOW_NORMAL);
     imshow("Obtenida de la camara..", imagen);
 
-    // Recortar imagen
-    WebCam.ExtraeHoja(imagen);
-    //WebCam.rotarImagen(imagen, 90);
-    namedWindow("Recortada..", WINDOW_NORMAL);
-    imshow("Recortada..", imagen);
-
-    Mat im2;
-    WebCam.ProcesaImagen( imagen, im2 );
-    namedWindow("Editada..", WINDOW_NORMAL);
-    imshow("Editada..", im2);
-
-
-
-    waitKey();
-    cvDestroyAllWindows();
     return 0;
 }
