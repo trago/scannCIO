@@ -25,10 +25,11 @@ public:
     @param[in] numero del dispositivo o camara ( -1 para trabajar con la imagen de archivo )
     @param[in] nombre con ruta del archivo
     @param[out] imagen editada
+    @param[in] demo indica si se captura la imagen en modo demostracion.
 
     @author Juan Manuel Ruiz
     */
-    bool GetImage( cv::Mat& imagen, int modo, std::string r_imagen = "" );
+    bool GetImage( cv::Mat& imagen, int modo, std::string r_imagen = "", bool demo=false );
 
     // Setters
     void setDispositivo( int disp );
@@ -37,11 +38,23 @@ public:
     // Getters
     int getDispositivo();
     //cv::Vec2i getResolucion();
+    
+    /**
+     Muestra las imagenes capturadas para demostracion.
+     
+     @author Julio C. Estrada
+     */
+    void showTest();
 
 private:
 
     int dispositivo;
     cv::Vec2i resolucion;
+    /** Es la imagen capturada de la camara*/
+    cv::Mat m_imagen;
+    /** es la imagen editada */
+    cv::Mat m_imgscanned;
+    
 
     /**
     Captura una image de la camara para su procesamiento.
@@ -50,7 +63,7 @@ private:
 
     @author Juan Manuel Ruiz
     */
-    bool Capture( cv::Mat& imagen );
+    bool Capture( cv::Mat& imagen, bool demo=false );
 
     /**
     Detecta los bordes de la hoja en la imagen

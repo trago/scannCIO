@@ -21,15 +21,17 @@ int main() {
     String r_imagen = "240712.jpg";
 
     // Funcion que obtiene la imagen de la camara
-    WebCam.GetImage( imagen, 1 );
+    WebCam.GetImage( imagen, 0, "", false /*true para que muestre la captura*/);
 
     //imagen = imread("10MPX01.jpg");
     if (imagen.empty()) {
-        cout << "No se pudo abrir el archivo"<<endl;
+        cout << "No se pudo abrir el archivo o el numero de dispositivo no existe"<<endl;
         return 1;
     }
-    namedWindow("Obtenida de la camara..", WINDOW_NORMAL);
-    imshow("Obtenida de la camara..", imagen);
+    
+    WebCam.showTest();
+    //namedWindow("Obtenida de la camara..", WINDOW_NORMAL);
+    //imshow("Obtenida de la camara..", imagen);
 
     return 0;
 }

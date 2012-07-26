@@ -66,7 +66,7 @@ int Camara::vectorMayor( std::vector< std::vector<cv::Point_<int> > >& bordes )
 }
 
 // Funcion que captura la image de la camara para su procesamiento
-bool Camara::Capture( cv::Mat& imagen )
+bool Camara::Capture( cv::Mat& imagen, bool demo )
 {
 
   int tecla;
@@ -129,6 +129,18 @@ bool Camara::Capture( cv::Mat& imagen )
     cv::Mat im = frame;
     BordeHoja(im, borde);
     rectangle( im, borde, cv::Scalar(255), 2 );
+    if(!demo){
+        // Guardar en la imagen pasada como parametro
+        im = cvQueryFrame( capture );
+        im.copyTo(imagen);
+        
+        // Liberar el dispositivo de captura y la memoria
+        cvDestroyAllWindows();
+        cvReleaseCapture( &capture );
+        return true;
+      
+      break;
+    }
 
     // Se muestra la imagen en la ventana
     cvShowImage( "Press enter to capture...", frame );
@@ -271,7 +283,7 @@ void Camara::changeBrightContrast(cv::Mat image, cv::Mat &im_res, float bright, 
 }
 
 
-bool Camara::GetImage( cv::Mat& imagen, int modo, std::string r_imagen ){
+bool Camara::GetImage( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
 
     if( modo < 0 ){
 
@@ -284,11 +296,12 @@ bool Camara::GetImage( cv::Mat& imagen, int modo, std::string r_imagen ){
     }
     else {
         setDispositivo( modo );
-        Capture(imagen);
+        Capture(imagen, demo);
     }
-
-    cv::namedWindow("Original..", CV_WINDOW_NORMAL);
-    cv::imshow("Original..", imagen);
+    if (imagen.empty()) {
+        return false;
+    }
+    m_imagen = imagen;
 
     // Edicion de imagen
     cv::Mat im2;
@@ -297,11 +310,19 @@ bool Camara::GetImage( cv::Mat& imagen, int modo, std::string r_imagen ){
     ProcesaImagen( imagen, im2 );
 
     im2.copyTo(imagen);
+    m_imgscanned = imagen;
 
-    cv::namedWindow("Editada..", CV_WINDOW_NORMAL);
-    cv::imshow("Editada..", im2);
-
-    cv::waitKey();
-    cvDestroyAllWindows();
     return true;
+}
+
+void Camara::showTest()
+{
+    cv::namedWindow("Original..", CV_WINDOW_NORMAL);
+    cv::imshow("Original..", m_imagen);
+        
+    cv::namedWindow("Editada..", CV_WINDOW_NORMAL);
+    cv::imshow("Editada..", m_imgscanned);
+    
+    cv::waitKey();
+    cvDestroyAllWindows();  
 }
