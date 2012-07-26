@@ -39,6 +39,8 @@ public:
     int getDispositivo();
     //cv::Vec2i getResolucion();
     
+    void setResolution(int width, int height);
+    
     /**
      Muestra las imagenes capturadas para demostracion.
      

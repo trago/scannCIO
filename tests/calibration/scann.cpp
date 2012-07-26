@@ -87,8 +87,8 @@ bool Camara::Capture( cv::Mat& imagen, bool demo )
   // Elegir Resolucion (1600 x 1200)
 //  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 1600 );
 //  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1200 );
-  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 2592 );
-  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1944 );
+  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, resolucion[0] );
+  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, resolucion[1] );
 
 
   /*
@@ -325,4 +325,10 @@ void Camara::showTest()
     
     cv::waitKey();
     cvDestroyAllWindows();  
+}
+
+void Camara::setResolution(int width, int height)
+{
+    resolucion[0]=width;
+    resolucion[1]=height;
 }

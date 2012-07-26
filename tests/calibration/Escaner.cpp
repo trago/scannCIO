@@ -16,6 +16,7 @@ int main() {
 
     // Creamos una instancia de Camara
     Camara WebCam;
+    WebCam.setResolution(2592, 1944); //Poner la resolucion de tu camara
 
     Mat imagen;
     String r_imagen = "240712.jpg";
