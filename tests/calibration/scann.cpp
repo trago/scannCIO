@@ -218,6 +218,7 @@ void Camara::ProcesaImagen( cv::Mat imagen, cv::Mat &im_res )
   cv::cvtColor(imagen, aux_imagen, CV_BGR2GRAY);
   cv::cvtColor(imagen, im_res, CV_BGR2GRAY);
   cv::GaussianBlur(aux_imagen, aux_imagen, cv::Size(151,151), 0);
+  //cv::GaussianBlur(im_res, im_res, cv::Size(3,3), 0);
   aux_imagen = im_res - aux_imagen;
   //cv::normalize(aux_imagen, aux_imagen, 0, 255, cv::NORM_MINMAX);
   cv::equalizeHist(aux_imagen, aux_imagen);

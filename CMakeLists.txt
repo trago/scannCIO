@@ -5,7 +5,7 @@ PROJECT( scannCIO )
   # enable warnings
 ADD_DEFINITIONS( -Wall )
 
-set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_BUILD_TYPE "Debug")
   
   # by default only QtCore and QtGui modules are enabled
   # other modules must be enabled like this:

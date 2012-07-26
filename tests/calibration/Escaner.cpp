@@ -27,6 +27,10 @@ int main() {
     //WebCam.Capture( imagen );
     //imwrite("30MPX01.jpg", imagen);
     imagen = imread("10MPX01.jpg");
+    if (imagen.empty()) {
+        cout << "No se pudo abrir el archivo"<<endl;
+        return 1;
+    }
     namedWindow("Obtenida de la camara..", WINDOW_NORMAL);
     imshow("Obtenida de la camara..", imagen);
 
