@@ -33,13 +33,10 @@ public:
 
     // Setters
     void setDispositivo( int disp );
-    //void setResolucion( int width, int height );
+    void setResolution(int width, int height);
 
     // Getters
-    int getDispositivo();
-    //cv::Vec2i getResolucion();
-    
-    void setResolution(int width, int height);
+    int getDispositivo();    
     
     /**
      Muestra las imagenes capturadas para demostracion.

@@ -7,47 +7,45 @@ Camara::Camara()
   dispositivo = 0;
 }
 
-// Setters
+/* Setters */
+
 void Camara::setDispositivo( int disp ){
   dispositivo = disp;
 }
 
-/*
-void Camara::setResolucion(int width, int height){
-    Camara.resolucion(0) = width;
-    Camara.resolucion(1) = height;
+void Camara::setResolution(int width, int height)
+{
+    resolucion[0]=width;
+    resolucion[1]=height;
 }
-*/
 
-// Getters
+
+/* Getters */
 int Camara::getDispositivo(){
     return dispositivo;
 }
 
-/*
-cv::Vec2i Camara::getResolucion(){
-    return Camara.resolucion;
-}
-*/
+/* Operative Methods */
 
+// Funcion para rotar la imagen
 void Camara::rotarImagen( cv::Mat& imagen, double angulo )
 {
-    /*
-    cv::Mat Img( imagen.cols, imagen.rows, imagen.type() );
+    if( imagen.rows < imagen.cols ){
+        cv::Mat Img( imagen.cols, imagen.rows, imagen.type() );
+        cv::Point2f centroImg( imagen.cols / 2.0F, imagen.cols / 2.0F );
+        cv::Mat mat_rot  = getRotationMatrix2D (centroImg, angulo, 1.0);
+        cv::warpAffine( imagen, Img, mat_rot, Img.size() );
+        Img.copyTo(imagen);
+    }
 
-    printf("%d x %d => %d x %d", imagen.size().height, imagen.size().width, Img.size().height, Img.size().width );
-
-    cv::Point2f centroImg( imagen.cols / 2.0F, imagen.rows / 2.0F );
-    cv::Mat mat_rot  = getRotationMatrix2D (centroImg, angulo, 1.0);
-
-    cv::warpAffine ( imagen, Img, mat_rot, Img.size() );
-
-    //cvNamedWindow("Rotada", CV_WINDOW_NORMAL);
-    //cv::imshow("Rotada", Img);
-    Img.copyTo(imagen);
-    */
+    else{
+        cv::Mat Img( imagen.cols, imagen.rows, imagen.type() );
+        cv::Point2f centroImg( imagen.cols / 2.0F, imagen.cols / 2.0F );
+        cv::Mat mat_rot  = getRotationMatrix2D (centroImg, angulo, 1.0);
+        cv::warpAffine( imagen, Img, mat_rot, Img.size() );
+        Img.copyTo(imagen);
+    }
 }
-
 
 // Funcion que determina cual es el borde de mayor tamaño detectado
 int Camara::vectorMayor( std::vector< std::vector<cv::Point_<int> > >& bordes )
@@ -154,13 +152,13 @@ bool Camara::Capture( cv::Mat& imagen, bool demo )
       im = cvQueryFrame( capture );
       im.copyTo(imagen);
 
-      // Liberar el dispositivo de captura y la memoria
-      cvDestroyAllWindows();
-      cvReleaseCapture( &capture );
-      return true;
     }
   }
 
+  // Liberar el dispositivo de captura y la memoria
+  cvDestroyAllWindows();
+  cvReleaseCapture( &capture );
+  return true;
 }
 
 // Funcion que detecta la hoja en la imagen
@@ -327,8 +325,3 @@ void Camara::showTest()
     cvDestroyAllWindows();  
 }
 
-void Camara::setResolution(int width, int height)
-{
-    resolucion[0]=width;
-    resolucion[1]=height;
-}

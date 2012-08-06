@@ -22,7 +22,9 @@ int main() {
     String r_imagen = "240712.jpg";
 
     // Funcion que obtiene la imagen de la camara
-    WebCam.GetImage( imagen, 0, "", false /*true para que muestre la captura*/);
+    //WebCam.GetImage( imagen, 0, "", false /*true para que muestre la captura*/);
+
+    WebCam.GetImage( imagen, -1, r_imagen, true /*true para que muestre la captura*/);
 
     //imagen = imread("10MPX01.jpg");
     if (imagen.empty()) {
