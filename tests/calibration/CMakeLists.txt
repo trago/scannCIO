@@ -1,3 +1,5 @@
+
+
 set(calibration_SRC 
   main.cc
 )
@@ -16,6 +18,8 @@ add_executable(Capture
 
 target_link_libraries(Capture ${OpenCV_LIBS})
 
+# All the lines belong JM (--/--/--)
+
 add_executable(Escaner
         Escaner.cpp
         scann.cpp
@@ -23,3 +27,35 @@ add_executable(Escaner
 )
 
 target_link_libraries(Escaner ${OpenCV_LIBS})
+
+
+# All the lines belong JM (23/09/12)
+
+set(GUI1_SOURCES 
+	maingui.cpp
+  	mainwindow.cpp
+  	reconstructor.cpp
+        scann.cpp
+        mainwindow.ui
+)
+
+set(GUI1_HEADERS
+	mainwindow.h
+        reconstructor.h
+        scann.h
+)
+
+set(GUI1_FORMS mainwindow.ui)
+
+qt4_wrap_cpp(GUI1_HEADERS_MOC ${GUI1_HEADERS})
+qt4_wrap_ui(GUI1_FORMS_HEADERS ${GUI1_FORMS})
+#qt4_add_resources(GUI1_RESOURCES_RCC ${GUI1_RESOURCES})
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+add_executable( GUI1 ${GUI1_SOURCES}
+               ${GUI1_HEADERS_MOC}
+               ${GUI1_FORMS_HEADERS}
+               ${GUI1_RESOURCES_RCC})
+
+target_link_libraries( GUI1 ${QT_LIBRARIES} ${OpenCV_LIBS})

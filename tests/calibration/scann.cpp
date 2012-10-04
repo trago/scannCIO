@@ -280,11 +280,8 @@ void Camara::changeBrightContrast(cv::Mat image, cv::Mat &im_res, float bright, 
   newImage.copyTo(im_res);
 }
 
-
-bool Camara::GetImage( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
-
+bool Camara::setImage( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
     if( modo < 0 ){
-
         if( r_imagen.empty() ){
             return false;
         }
@@ -299,7 +296,14 @@ bool Camara::GetImage( cv::Mat& imagen, int modo, std::string r_imagen, bool dem
     if (imagen.empty()) {
         return false;
     }
+
     m_imagen = imagen;
+    return true;
+}
+
+bool Camara::Test( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
+
+    setImage( imagen, modo, r_imagen, demo );
 
     // Edicion de imagen
     cv::Mat im2;

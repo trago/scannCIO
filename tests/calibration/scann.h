@@ -29,7 +29,18 @@ public:
 
     @author Juan Manuel Ruiz
     */
-    bool GetImage( cv::Mat& imagen, int modo, std::string r_imagen = "", bool demo=false );
+    bool Test( cv::Mat& imagen, int modo, std::string r_imagen = "", bool demo=false );
+
+    /**
+    Captura imagen, desde un archivo (modo = -1) o desde la camara (modo = 0)
+
+    @param[in] numero del dispositivo o camara ( -1 para trabajar con la imagen de archivo )
+    @param[in] nombre con ruta del archivo
+    @param[in] imagen a editar
+
+    @author Juan Manuel Ruiz
+    */
+    bool setImage( cv::Mat& imagen, int modo, std::string r_imagen = "", bool demo=false );
 
     // Setters
     void setDispositivo( int disp );
