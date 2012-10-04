@@ -20,7 +20,7 @@ public:
     Camara();
 
     /**
-    Captura y procesa una imagen, ya sea desde un archivo o desde la camara
+    Procesa una imagen, ya sea desde un archivo o desde la camara
 
     @param[in] numero del dispositivo o camara ( -1 para trabajar con la imagen de archivo )
     @param[in] nombre con ruta del archivo
@@ -40,7 +40,7 @@ public:
 
     @author Juan Manuel Ruiz
     */
-    bool setImage( cv::Mat& imagen, int modo, std::string r_imagen = "", bool demo=false );
+    bool GetImage( cv::Mat& imagen, int modo, std::string r_imagen = "", bool demo=false );
 
     // Setters
     void setDispositivo( int disp );

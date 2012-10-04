@@ -19,7 +19,6 @@ void Camara::setResolution(int width, int height)
     resolucion[1]=height;
 }
 
-
 /* Getters */
 int Camara::getDispositivo(){
     return dispositivo;
@@ -280,7 +279,7 @@ void Camara::changeBrightContrast(cv::Mat image, cv::Mat &im_res, float bright, 
   newImage.copyTo(im_res);
 }
 
-bool Camara::setImage( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
+bool Camara::GetImage( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
     if( modo < 0 ){
         if( r_imagen.empty() ){
             return false;
@@ -303,7 +302,7 @@ bool Camara::setImage( cv::Mat& imagen, int modo, std::string r_imagen, bool dem
 
 bool Camara::Test( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
 
-    setImage( imagen, modo, r_imagen, demo );
+    GetImage( imagen, modo, r_imagen, demo );
 
     // Edicion de imagen
     cv::Mat im2;
