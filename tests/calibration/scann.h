@@ -8,6 +8,8 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include "reconstructor.h"
+
 
 /**
   Camara para escanear documentos.
@@ -63,8 +65,7 @@ private:
     /** Es la imagen capturada de la camara*/
     cv::Mat m_imagen;
     /** es la imagen editada */
-    cv::Mat m_imgscanned;
-    
+    cv::Mat m_imgscanned;   
 
     /**
     Captura una image de la camara para su procesamiento.
@@ -74,6 +75,15 @@ private:
     @author Juan Manuel Ruiz
     */
     bool Capture( cv::Mat& imagen, bool demo=false );
+
+    /**
+    Realiza una transformacion afin de una imagen
+
+    @param[out] imagen es la imagen transformada.
+
+    @author Juan Manuel Ruiz
+    */
+    bool Transforma( cv::Mat& imagen );
 
     /**
     Detecta los bordes de la hoja en la imagen

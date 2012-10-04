@@ -56,25 +56,7 @@ void MainWindow::on_bt_giroHor_clicked()
 // Funcion - Evento del Boton "Transforma"
 void MainWindow::on_bt_transforma_clicked()
 {
-   cv::Mat im2;
-   image.copyTo(im2);
-
-   reconstructor rec(im2);
-
-    cv::namedWindow("Seleccion", CV_WINDOW_AUTOSIZE);
-    cvSetMouseCallback( "Seleccion", mouse_call, (void*) (&rec) );
-
-    while(rec.cont < 4) {
-        if (!rec.inImg.data)
-            break;
-
-        cv::imshow("Seleccion", rec.inImg );
-
-        if( cvWaitKey(100) == 27 )
-            cv::destroyWindow("Seleccion");
-    }
-
-    cvDestroyWindow("Seleccion");
+   Escaner.Transforma(image);
 }
 
 // Funcion - Evento del Boton "Procesado"
@@ -84,16 +66,6 @@ void MainWindow::on_bt_procesa_clicked()
 }
 
 // FUNCIONES EXTRAS ========================================================================================================
-
-// Funcion que procesa el evento del mouse al hacer clic (Externa a la clase principal)
-void mouse_call (int event, int x, int y, int flags, void *param)
-{
-    reconstructor* rec = (reconstructor*) param;
-
-    // Click Izquierdo del Mouse
-    if( flags == CV_EVENT_FLAG_LBUTTON )
-        rec->setPoint( x, y );
-}
 
 // Funcion que administra la visualizacion en la GUI
 void MainWindow::muestraImagen(){

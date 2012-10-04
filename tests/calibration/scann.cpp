@@ -1,13 +1,71 @@
 #include "scann.h"
+#include "reconstructor.h"
 
 using namespace std;
+
+// Declaracion de la f uncion que procesa el evento del mouse al hacer clic (Externa a la clase principal)
+void mouse_call (int event, int x, int y, int flags, void *param);
 
 Camara::Camara()
 {
   dispositivo = 0;
 }
 
-/* Setters */
+/* Funciones Principales ================================================================================================ */
+
+// Funcion que para obtener una imagen ya sea de un archivo o de un dispositivo
+bool Camara::GetImage( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
+    if( modo < 0 ){
+        if( r_imagen.empty() ){
+            return false;
+        }
+        else {
+            imagen = cv::imread(r_imagen);
+        }
+    }
+    else {
+        setDispositivo( modo );
+        Capture(imagen, demo);
+    }
+    if (imagen.empty()) {
+        return false;
+    }
+
+    m_imagen = imagen;
+    return true;
+}
+
+// Funcion de prueba que engloba la captura y procesado de la imagen
+bool Camara::Test( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
+
+    GetImage( imagen, modo, r_imagen, demo );
+
+    // Edicion de imagen
+    cv::Mat im2;
+    ExtraeHoja(imagen);
+    rotarImagen(imagen, 90);
+    ProcesaImagen( imagen, im2 );
+
+    im2.copyTo(imagen);
+    m_imgscanned = imagen;
+
+    return true;
+}
+
+// Funcion que despliega la imagen original y la procesada
+void Camara::showTest()
+{
+    cv::namedWindow("Original..", CV_WINDOW_NORMAL);
+    cv::imshow("Original..", m_imagen);
+
+    cv::namedWindow("Editada..", CV_WINDOW_NORMAL);
+    cv::imshow("Editada..", m_imgscanned);
+
+    cv::waitKey();
+    cvDestroyAllWindows();
+}
+
+/* Setters ============================================================================================================== */
 
 void Camara::setDispositivo( int disp ){
   dispositivo = disp;
@@ -19,12 +77,12 @@ void Camara::setResolution(int width, int height)
     resolucion[1]=height;
 }
 
-/* Getters */
+/* Getters ============================================================================================================== */
 int Camara::getDispositivo(){
     return dispositivo;
 }
 
-/* Operative Methods */
+/* Operative Methods ==================================================================================================== */
 
 // Funcion para rotar la imagen
 void Camara::rotarImagen( cv::Mat& imagen, double angulo )
@@ -279,52 +337,40 @@ void Camara::changeBrightContrast(cv::Mat image, cv::Mat &im_res, float bright, 
   newImage.copyTo(im_res);
 }
 
-bool Camara::GetImage( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
-    if( modo < 0 ){
-        if( r_imagen.empty() ){
-            return false;
-        }
-        else {
-            imagen = cv::imread(r_imagen);
-        }
-    }
-    else {
-        setDispositivo( modo );
-        Capture(imagen, demo);
-    }
-    if (imagen.empty()) {
-        return false;
-    }
-
-    m_imagen = imagen;
-    return true;
-}
-
-bool Camara::Test( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
-
-    GetImage( imagen, modo, r_imagen, demo );
-
-    // Edicion de imagen
+// Funcion que realiza la transformacion afin de una imagen
+bool Camara::Transforma( cv::Mat& imagen ){
     cv::Mat im2;
-    ExtraeHoja(imagen);
-    rotarImagen(imagen, 90);
-    ProcesaImagen( imagen, im2 );
+    imagen.copyTo(im2);
 
-    im2.copyTo(imagen);
-    m_imgscanned = imagen;
+    reconstructor rec(im2);
 
+    cv::namedWindow("Seleccion", CV_WINDOW_AUTOSIZE);
+    cvSetMouseCallback( "Seleccion", mouse_call, (void*) (&rec) );
+
+    while(rec.cont < 4) {
+        if (!rec.inImg.data)
+            break;
+
+        cv::imshow("Seleccion", rec.inImg );
+
+        if( cvWaitKey(100) == 27 )
+            cv::destroyWindow("Seleccion");
+    }
+
+    cv::destroyWindow("Seleccion");
     return true;
 }
 
-void Camara::showTest()
+/* FUNCIONES EXTRAS ===================================================================================================== */
+
+// Funcion que procesa el evento del mouse al hacer clic (Externa a la clase principal)
+void mouse_call (int event, int x, int y, int flags, void *param)
 {
-    cv::namedWindow("Original..", CV_WINDOW_NORMAL);
-    cv::imshow("Original..", m_imagen);
-        
-    cv::namedWindow("Editada..", CV_WINDOW_NORMAL);
-    cv::imshow("Editada..", m_imgscanned);
-    
-    cv::waitKey();
-    cvDestroyAllWindows();  
+    reconstructor* rec = (reconstructor*) param;
+
+    // Click Izquierdo del Mouse
+    if( flags == CV_EVENT_FLAG_LBUTTON )
+        rec->setPoint( x, y );
 }
+
 

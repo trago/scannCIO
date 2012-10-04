@@ -7,7 +7,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "reconstructor.h"
+//#include "reconstructor.h"
 #include "scann.h"
 
 namespace Ui {
