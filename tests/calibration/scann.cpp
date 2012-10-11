@@ -1,20 +1,17 @@
 #include "scann.h"
-#include "reconstructor.h"
-
 using namespace std;
 
 // Declaracion de la f uncion que procesa el evento del mouse al hacer clic (Externa a la clase principal)
 void mouse_call (int event, int x, int y, int flags, void *param);
 
-Camara::Camara()
-{
-  dispositivo = 0;
+Scanner::Scanner(){
+
 }
 
 /* Funciones Principales ================================================================================================ */
 
 // Funcion que para obtener una imagen ya sea de un archivo o de un dispositivo
-bool Camara::GetImage( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
+bool Scanner::GetImage( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
     if( modo < 0 ){
         if( r_imagen.empty() ){
             return false;
@@ -24,8 +21,8 @@ bool Camara::GetImage( cv::Mat& imagen, int modo, std::string r_imagen, bool dem
         }
     }
     else {
-        setDispositivo( modo );
-        Capture(imagen, demo);
+        //setDispositivo( modo );
+        //Capture(imagen, demo);
     }
     if (imagen.empty()) {
         return false;
@@ -36,7 +33,7 @@ bool Camara::GetImage( cv::Mat& imagen, int modo, std::string r_imagen, bool dem
 }
 
 // Funcion de prueba que engloba la captura y procesado de la imagen
-bool Camara::Test( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
+bool Scanner::Test( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
 
     GetImage( imagen, modo, r_imagen, demo );
 
@@ -53,7 +50,7 @@ bool Camara::Test( cv::Mat& imagen, int modo, std::string r_imagen, bool demo){
 }
 
 // Funcion que despliega la imagen original y la procesada
-void Camara::showTest()
+void Scanner::showTest()
 {
     cv::namedWindow("Original..", CV_WINDOW_NORMAL);
     cv::imshow("Original..", m_imagen);
@@ -65,27 +62,10 @@ void Camara::showTest()
     cvDestroyAllWindows();
 }
 
-/* Setters ============================================================================================================== */
-
-void Camara::setDispositivo( int disp ){
-  dispositivo = disp;
-}
-
-void Camara::setResolution(int width, int height)
-{
-    resolucion[0]=width;
-    resolucion[1]=height;
-}
-
-/* Getters ============================================================================================================== */
-int Camara::getDispositivo(){
-    return dispositivo;
-}
-
 /* Operative Methods ==================================================================================================== */
 
 // Funcion para rotar la imagen
-void Camara::rotarImagen( cv::Mat& imagen, double angulo )
+void Scanner::rotarImagen( cv::Mat& imagen, double angulo )
 {
     if( imagen.rows < imagen.cols ){
         cv::Mat Img( imagen.cols, imagen.rows, imagen.type() );
@@ -104,124 +84,9 @@ void Camara::rotarImagen( cv::Mat& imagen, double angulo )
     }
 }
 
-// Funcion que determina cual es el borde de mayor tamaño detectado
-int Camara::vectorMayor( std::vector< std::vector<cv::Point_<int> > >& bordes )
-{
-  int M = bordes.size(), N;
-  int max = bordes[0].size();;
-  int idx = 0;
-  for( int i = 1; i<M; i++ ){
-    N = bordes[i].size();
-    if( N > max ){
-      max = N;
-      idx = i;
-    }
-  }
-  return idx;
-}
-
-// Funcion que captura la image de la camara para su procesamiento
-bool Camara::Capture( cv::Mat& imagen, bool demo )
-{
-
-  int tecla;
-  int disp = getDispositivo();
-
-  // Abrir dispositivo de captura, se puede usar la linea siguiente pero con ella
-  // no podemos manipular los parametros de la camara por eso se usa cvCreateCameraCapture()
-  // CvCapture* capture = cvCaptureFromCAM( disp );
-  CvCapture* capture = cvCreateCameraCapture( disp );
-
-  // Comprobar que existe el dispositivo
-  if ( !capture ) {
-    //fprintf( stderr, "ERROR: Dispositivo de captura %d no encontrado \n", disp );
-    //getchar();
-    return false;
-  }
-
-  // Elegir Resolucion (1600 x 1200)
-//  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 1600 );
-//  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1200 );
-  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, resolucion[0] );
-  cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, resolucion[1] );
-
-
-  /*
-    // Otro Parametros
-    cvSetCaptureProperty( capture, CV_CAP_PROP_SATURATION, 0.5 );
-    cvSetCaptureProperty( capture, CV_CAP_PROP_BRIGHTNESS, 0.5 );
-    cvSetCaptureProperty( capture, CV_CAP_PROP_CONTRAST, 0.7 );
-    cvSetCaptureProperty( capture, CV_CAP_PROP_HUE, 0.5 );
-    cvSetCaptureProperty( capture, CV_CAP_PROP_GAIN, 0.5 );
-    cvSetCaptureProperty( capture, CV_CAP_PROP_EXPOSURE, 0.7 );
-    cvSetCaptureProperty( capture, CV_CAP_PROP_CONVERT_RGB, 0.5 );
-    cvSetCaptureProperty( capture, CV_CAP_PROP_RECTIFICATION, 0.5 );
-    cvSetCaptureProperty( capture, CV_CAP_PROP_GAIN, 0.5 );
-    */
-
-  // Crear ventana para el streaming
-  cvNamedWindow( "Press enter to capture...", CV_WINDOW_NORMAL);//  CV_WINDOW_AUTOSIZE);
-
-  // Ciclo infinito para stream
-  while ( 1 ) {
-    // Obtener imagen (frame)
-    IplImage* frame = cvQueryFrame( capture );
-
-    // Comprobar si se obtiene o no la imagen
-    if ( !frame ) {
-      //fprintf( stderr, "ERROR: frame is null...\n" );
-      // Liberar el dispositivo de captura y la memoria
-      cvDestroyAllWindows();
-      cvReleaseCapture( &capture );
-      //getchar();
-      return false;
-    }
-
-    // Falta rotar la imagen... OPCIONAL
-
-    // Se detecta la imagen frente a la camara
-    cv::Rect borde;
-    cv::Mat im = frame;
-    BordeHoja(im, borde);
-    rectangle( im, borde, cv::Scalar(255), 2 );
-    if(!demo){
-        // Guardar en la imagen pasada como parametro
-        im = cvQueryFrame( capture );
-        im.copyTo(imagen);
-        
-        // Liberar el dispositivo de captura y la memoria
-        cvDestroyAllWindows();
-        cvReleaseCapture( &capture );
-        return true;
-      
-      break;
-    }
-
-    // Se muestra la imagen en la ventana
-    cvShowImage( "Press enter to capture...", frame );
-
-    // Al presionar una tecla quitar los bits altos usando el operador AND
-    tecla = cvWaitKey(100) & 255;
-
-    // Si se presiona la tecla enter...
-    if( tecla == 10 ){
-      // Guardar en la imagen pasada como parametro
-      im = cvQueryFrame( capture );
-      im.copyTo(imagen);
-
-    }
-  }
-
-  // Liberar el dispositivo de captura y la memoria
-  cvDestroyAllWindows();
-  cvReleaseCapture( &capture );
-  return true;
-}
-
 // Funcion que detecta la hoja en la imagen
-void Camara::BordeHoja( cv::Mat& imagen, cv::Rect& borde )
+void Scanner::BordeHoja( cv::Mat& imagen, cv::Rect& borde )
 {
-
   // Creando matriz HSV con las dimensiones de la imagen
   cv::Mat HSV;
   cv::Mat temp;
@@ -274,8 +139,24 @@ void Camara::BordeHoja( cv::Mat& imagen, cv::Rect& borde )
   //rectangle( imborders, borde, Scalar(0), 2 );
 }
 
+// Funcion que determina cual es el borde de mayor tamaño detectado
+int Scanner::vectorMayor( std::vector< std::vector<cv::Point_<int> > >& bordes )
+{
+  int M = bordes.size(), N;
+  int max = bordes[0].size();;
+  int idx = 0;
+  for( int i = 1; i<M; i++ ){
+    N = bordes[i].size();
+    if( N > max ){
+      max = N;
+      idx = i;
+    }
+  }
+  return idx;
+}
+
 // Funcion que extrae la hoja de la imagen
-void Camara::ExtraeHoja( cv::Mat& imagen )
+void Scanner::ExtraeHoja( cv::Mat& imagen )
 {
 
   cv::Rect borde;
@@ -288,7 +169,7 @@ void Camara::ExtraeHoja( cv::Mat& imagen )
 }
 
 // Funcion que procesa la imagen.
-void Camara::ProcesaImagen( cv::Mat imagen, cv::Mat &im_res )
+void Scanner::ProcesaImagen( cv::Mat imagen, cv::Mat &im_res )
 {
   /*
     // Filtro Canny
@@ -316,7 +197,7 @@ void Camara::ProcesaImagen( cv::Mat imagen, cv::Mat &im_res )
 }
 
 // Funcion para modicar el brillo y contraste
-void Camara::changeBrightContrast(cv::Mat image, cv::Mat &im_res, float bright, float contrast)
+void Scanner::changeBrightContrast(cv::Mat image, cv::Mat &im_res, float bright, float contrast)
 {
   cv::Mat newImage = cv::Mat::zeros(image.size(), image.type());
   if(image.channels() == 3)
@@ -338,7 +219,7 @@ void Camara::changeBrightContrast(cv::Mat image, cv::Mat &im_res, float bright, 
 }
 
 // Funcion que realiza la transformacion afin de una imagen
-bool Camara::Transforma( cv::Mat& imagen ){
+bool Scanner::Transforma( cv::Mat &imagen ){
     cv::Mat im2;
     imagen.copyTo(im2);
 
@@ -347,6 +228,7 @@ bool Camara::Transforma( cv::Mat& imagen ){
     cv::namedWindow("Seleccion", CV_WINDOW_AUTOSIZE);
     cvSetMouseCallback( "Seleccion", mouse_call, (void*) (&rec) );
 
+    // Tomando los 4 puntos a transformar
     while(rec.cont < 4) {
         if (!rec.inImg.data)
             break;
@@ -356,6 +238,11 @@ bool Camara::Transforma( cv::Mat& imagen ){
         if( cvWaitKey(100) == 27 )
             cv::destroyWindow("Seleccion");
     }
+
+    // Obteniendo Matriz de Transformacion
+
+
+    // Realizando la transformación
 
     cv::destroyWindow("Seleccion");
     return true;

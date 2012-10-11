@@ -1,6 +1,4 @@
-
-
-set(calibration_SRC 
+set(calibration_SRC
   main.cc
 )
 set(calibration_LIBS
@@ -8,6 +6,8 @@ set(calibration_LIBS
 
 add_executable(calibration ${calibration_SRC})
 target_link_libraries(calibration ${calibration_LIBS})
+
+# -------------------------------------------------------
 
 add_executable(Capture 
 	main.cpp
@@ -18,29 +18,35 @@ add_executable(Capture
 
 target_link_libraries(Capture ${OpenCV_LIBS})
 
+# -------------------------------------------------------
+# Scanner's Project without GUI
 # All the lines belong JM (--/--/--)
 
 add_executable(Escaner
         Escaner.cpp
-        scann.cpp
-        scann.h
+        scann.cpp       
+        camera.cpp
+        reconstructor.cpp
 )
 
 target_link_libraries(Escaner ${OpenCV_LIBS})
 
-
+# -------------------------------------------------------
+# Scanner's Project with GUI (Powered in Qt)
 # All the lines belong JM (23/09/12)
 
 set(GUI1_SOURCES 
 	maingui.cpp
   	mainwindow.cpp
-  	reconstructor.cpp
-        scann.cpp
         mainwindow.ui
+        camera.cpp
+        reconstructor.cpp
+        scann.cpp        
 )
 
 set(GUI1_HEADERS
 	mainwindow.h
+        camera.h
         reconstructor.h
         scann.h
 )

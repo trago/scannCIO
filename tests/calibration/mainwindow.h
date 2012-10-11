@@ -7,7 +7,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-//#include "reconstructor.h"
+#include "reconstructor.h"
 #include "scann.h"
 
 namespace Ui {
@@ -29,7 +29,7 @@ private slots:
     void on_bt_procesa_clicked();
 
 private:
-    Camara Escaner;
+    Scanner Escaner;
     Ui::MainWindow *ui;
     cv::Mat image;    
 

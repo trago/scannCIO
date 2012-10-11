@@ -1,25 +1,27 @@
 #ifndef SCANN_H
 #define SCANN_H
 
+#include <vector>
 #include <stdio.h>
 #include <string.h>
-#include <vector>
+#include <iostream>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/calib3d/calib3d.hpp>
 
+#include "camera.h"
 #include "reconstructor.h"
 
-
 /**
-  Camara para escanear documentos.
+  Scanner para escanear documentos.
  */
-class Camara{
+class Scanner{
 public:
     /**
     Constructor.
     */
-    Camara();
+    Scanner();
 
     /**
     Procesa una imagen, ya sea desde un archivo o desde la camara
@@ -42,14 +44,7 @@ public:
 
     @author Juan Manuel Ruiz
     */
-    bool GetImage( cv::Mat& imagen, int modo, std::string r_imagen = "", bool demo=false );
-
-    // Setters
-    void setDispositivo( int disp );
-    void setResolution(int width, int height);
-
-    // Getters
-    int getDispositivo();    
+    bool GetImage( cv::Mat& imagen, int modo, std::string r_imagen = "", bool demo=false );  
     
     /**
      Muestra las imagenes capturadas para demostracion.
@@ -57,24 +52,6 @@ public:
      @author Julio C. Estrada
      */
     void showTest();
-
-private:
-
-    int dispositivo;
-    cv::Vec2i resolucion;
-    /** Es la imagen capturada de la camara*/
-    cv::Mat m_imagen;
-    /** es la imagen editada */
-    cv::Mat m_imgscanned;   
-
-    /**
-    Captura una image de la camara para su procesamiento.
-
-    @param[out] imagen es la imagen capturada.
-
-    @author Juan Manuel Ruiz
-    */
-    bool Capture( cv::Mat& imagen, bool demo=false );
 
     /**
     Realiza una transformacion afin de una imagen
@@ -84,25 +61,6 @@ private:
     @author Juan Manuel Ruiz
     */
     bool Transforma( cv::Mat& imagen );
-
-    /**
-    Detecta los bordes de la hoja en la imagen
-
-    @param[in] imagen de la cual se extraera la hoja.
-    @param[out] borde es el rectangulo que mejor define a la hoja en la imagen.
-
-    @author Juan Manuel Ruiz
-   */
-    void BordeHoja( cv::Mat& imagen, cv::Rect& borde );
-
-    /**
-    Extrae la hoja de la imagen a partir de un borde dado
-
-    @param[out] imagen de la cual se extraera la hoja.
-
-    @author Juan Manuel Ruiz
-    */
-    void ExtraeHoja( cv::Mat& imagen );
 
     /**
     Procesa la imagen.
@@ -139,6 +97,25 @@ private:
     */
     void rotarImagen( cv::Mat& imagen, double angulo);
 
+
+private:
+
+    /** Es la imagen capturada de la camara*/
+    cv::Mat m_imagen;
+    /** es la imagen editada */
+    cv::Mat m_imgscanned;
+
+
+    /**
+    Detecta los bordes de la hoja en la imagen
+
+    @param[in] imagen de la cual se extraera la hoja.
+    @param[out] borde es el rectangulo que mejor define a la hoja en la imagen.
+
+    @author Juan Manuel Ruiz
+   */
+    void BordeHoja( cv::Mat& imagen, cv::Rect& borde );
+
     /**
     Determina cual es el borde de mayor tamaño detectado
 
@@ -149,6 +126,14 @@ private:
     */
     int vectorMayor( std::vector< std::vector<cv::Point_<int> > >& bordes );
 
+    /**
+    Extrae la hoja de la imagen a partir de un borde dado
+
+    @param[out] imagen de la cual se extraera la hoja.
+
+    @author Juan Manuel Ruiz
+    */
+    void ExtraeHoja( cv::Mat& imagen );
 };
 
 #endif // SCANN_H

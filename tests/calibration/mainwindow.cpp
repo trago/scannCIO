@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "iostream"
 
+#include "reconstructor.h"
+
 void mouse_call (int event, int x, int y, int flags, void *param);
 
 // FUNCIONES DEL FORMULARIO ================================================================================================
@@ -11,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    Escaner.setResolution(2592, 1944); // Poner la resolucion de tu camara
+    //Escaner.setResolution(2592, 1944); // Poner la resolucion de tu camara
 
     ui->setupUi(this);
     ui->bt_giroHor->setEnabled(false);
