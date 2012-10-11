@@ -99,12 +99,12 @@ public:
 
 
 private:
-
     /** Es la imagen capturada de la camara*/
     cv::Mat m_imagen;
     /** es la imagen editada */
     cv::Mat m_imgscanned;
 
+    Cam Webcam; // Error
 
     /**
     Detecta los bordes de la hoja en la imagen
