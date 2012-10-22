@@ -13,7 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    //Escaner.setResolution(2592, 1944); // Poner la resolucion de tu camara
+    Escaner.Camara.setDevice(-1);
+    Escaner.Camara.setResolution(640,480);
 
     ui->setupUi(this);
     ui->bt_giroHor->setEnabled(false);
@@ -25,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    cvDestroyAllWindows();
 }
 
 // FUNCIONES OPERATIVAS - EVENTOS ==========================================================================================
@@ -32,20 +34,25 @@ MainWindow::~MainWindow()
 // Funcion - Evento del Boton "Abrir Imagen"
 void MainWindow::on_bt_abrir_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName( this, tr("Open Image"), ".",
+    if( Escaner.Camara.device < 0 ){
+        QString fileName = QFileDialog::getOpenFileName( this, tr("Open Image"), ".",
                                                            tr("Image Files (*.png *.jpg *.jpeg *.bmp) ") );
-    Escaner.GetImage( image, -1, fileName.toAscii().data(), true /*true para que muestre la captura*/);
+
+        if( fileName.toAscii().data() == NULL )
+            std::cout << "No se pudo abrir el archivo o el numero de dispositivo no existe" << std::endl;
+        else
+            Escaner.GetImage( image, Escaner.Camara.device, fileName.toAscii().data(), true /*true para que muestre la captura*/);
+    }
+    else{
+        Escaner.GetImage( image, Escaner.Camara.device );
+    }
 
     if(image.data){
-        ui->bt_giroHor->setEnabled(true);
+        //ui->bt_giroHor->setEnabled(true);
         ui->bt_transforma->setEnabled(true);
         ui->bt_procesa->setEnabled(true);
         muestraImagen();
     }
-
-    else
-        if( fileName.toAscii().data() != NULL )
-            std::cout << "No se pudo abrir el archivo o el numero de dispositivo no existe" << std::endl;
 }
 
 // Funcion - Evento del Boton "Giro Horizontal"
@@ -64,7 +71,10 @@ void MainWindow::on_bt_transforma_clicked()
 // Funcion - Evento del Boton "Procesado"
 void MainWindow::on_bt_procesa_clicked()
 {
-
+    cv::Mat imres;
+    Escaner.ProcesaImagen(image,imres);
+    imres.copyTo(image);
+    muestraImagen();
 }
 
 // FUNCIONES EXTRAS ========================================================================================================
@@ -80,20 +90,17 @@ void MainWindow::muestraImagen(){
     else
         cvtColor(image, temp, CV_GRAY2RGB);
 
-    float prop;
-    if( temp.rows < temp.cols )
-        prop = float(temp.cols) / float(temp.rows);
-    else
-        prop = float(temp.rows) / float(temp.cols);
+    if( temp.rows > temp.cols )
+        Escaner.rotarImagen(temp,90);
 
-    std::cout << temp.rows << " "<< temp.cols << " = " << prop << std::endl;
-    cv::Size dsize( temp.rows/2*1.33, temp.cols/2*1.33 );
+    cv::Size dsize( 900, 675);
     cv::resize(temp,temp, dsize);
 
     QImage img = QImage((const unsigned char*) (temp.data), temp.cols, temp.rows, QImage::Format_RGB888);
 
     // Mostrando en la etiqueta
     ui->lb_imagen->setPixmap(QPixmap::fromImage(img));
+
     // Reescalando
-    ui->lb_imagen->resize(ui->lb_imagen->pixmap()->size());
+    ui->lb_imagen->resize(ui->lb_imagen->pixmap()->size() );
 }

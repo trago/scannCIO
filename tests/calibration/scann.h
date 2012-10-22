@@ -13,11 +13,14 @@
 #include "camera.h"
 #include "reconstructor.h"
 
+
 /**
   Scanner para escanear documentos.
  */
 class Scanner{
 public:
+    Cam Camara;
+
     /**
     Constructor.
     */
@@ -103,8 +106,6 @@ private:
     cv::Mat m_imagen;
     /** es la imagen editada */
     cv::Mat m_imgscanned;
-
-    Cam Webcam; // Error
 
     /**
     Detecta los bordes de la hoja en la imagen

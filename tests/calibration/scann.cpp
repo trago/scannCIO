@@ -1,4 +1,6 @@
 #include "scann.h"
+#include "camera.h"
+
 using namespace std;
 
 // Declaracion de la f uncion que procesa el evento del mouse al hacer clic (Externa a la clase principal)
@@ -21,8 +23,7 @@ bool Scanner::GetImage( cv::Mat& imagen, int modo, std::string r_imagen, bool de
         }
     }
     else {
-        //setDispositivo( modo );
-        //Capture(imagen, demo);
+        Camara.Capture(imagen);
     }
     if (imagen.empty()) {
         return false;
@@ -225,7 +226,7 @@ bool Scanner::Transforma( cv::Mat &imagen ){
 
     reconstructor rec(im2);
 
-    cv::namedWindow("Seleccion", CV_WINDOW_AUTOSIZE);
+    cv::namedWindow("Seleccion", CV_WINDOW_NORMAL);
     cvSetMouseCallback( "Seleccion", mouse_call, (void*) (&rec) );
 
     // Tomando los 4 puntos a transformar

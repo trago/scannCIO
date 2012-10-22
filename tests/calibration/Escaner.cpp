@@ -17,7 +17,7 @@ int main() {
 
     Cam WebCam;
     // Params by device
-    WebCam.setDevice(1);
+    WebCam.setDevice(0);
     WebCam.setResolution(640,480);
 
     // Capture fuction

@@ -7,6 +7,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include "camera.h"
 #include "reconstructor.h"
 #include "scann.h"
 
@@ -29,6 +30,7 @@ private slots:
     void on_bt_procesa_clicked();
 
 private:
+    Cam Camara;
     Scanner Escaner;
     Ui::MainWindow *ui;
     cv::Mat image;    
