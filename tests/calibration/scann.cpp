@@ -241,9 +241,25 @@ bool Scanner::Transforma( cv::Mat &imagen ){
     }
 
     // Obteniendo Matriz de Transformacion
+    cv::Mat TransMat;
+    cv::Point2f dst[4];
+    dst[0].x= 47;
+    dst[0].y = 43;
+    dst[1].x = 1157;
+    dst[1].y = 43;
+    dst[2].x = 47;
+    dst[2].y = 1555;
+    dst[3].x = 1157;
+    dst[3].y = 1555;
 
+    TransMat = cv::getPerspectiveTransform(&rec.points[0], &dst[0]);
+    //std::cout << TransMat << std::endl;
 
     // Realizando la transformación
+    cv::Size dsize( 1200, 1600 );
+    cv::warpPerspective(imagen, rec.outImg, TransMat, dsize);
+
+    rec.outImg.copyTo(imagen);
 
     cv::destroyWindow("Seleccion");
     return true;

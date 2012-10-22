@@ -15,7 +15,7 @@ class reconstructor
 
         int cont;
         cv::Mat inImg, outImg, recImg;
-        cv::Point points[4];
+        cv::Point2f points[4];
 
         // Variables de la Matriz
         float outX1, outX2, outX3, outX4, outY1, outY2, outY3, outY4;

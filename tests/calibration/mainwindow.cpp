@@ -35,7 +35,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_bt_abrir_clicked()
 {
     if( Escaner.Camara.device < 0 ){
-        QString fileName = QFileDialog::getOpenFileName( this, tr("Open Image"), ".",
+        QString fileName = QFileDialog::getOpenFileName( this, tr("Abrir Imagen"), ".",
                                                            tr("Image Files (*.png *.jpg *.jpeg *.bmp) ") );
 
         if( fileName.toAscii().data() == NULL )
@@ -66,6 +66,7 @@ void MainWindow::on_bt_giroHor_clicked()
 void MainWindow::on_bt_transforma_clicked()
 {
    Escaner.Transforma(image);
+   muestraImagen();
 }
 
 // Funcion - Evento del Boton "Procesado"
