@@ -29,6 +29,8 @@ private slots:
     void on_bt_transforma_clicked();   
     void on_bt_procesa_clicked();
 
+    void on_bt_exportar_clicked();
+
 private:
     Cam Camara;
     Scanner Escaner;

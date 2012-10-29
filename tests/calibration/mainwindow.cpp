@@ -13,8 +13,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    Escaner.Camara.setDevice(-1);
-    Escaner.Camara.setResolution(640,480);
+    Escaner.Camara.setDevice(1);
+    //Escaner.Camara.setResolution(640,480);
+    Escaner.Camara.setResolution(2592,1944);
 
     ui->setupUi(this);
     ui->bt_giroHor->setEnabled(false);
@@ -78,6 +79,16 @@ void MainWindow::on_bt_procesa_clicked()
     muestraImagen();
 }
 
+void MainWindow::on_bt_exportar_clicked()
+{
+    if( image.data ){
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Exportar Imagen"), ".", tr("Image Files (*.png *.jpg *.jpeg *.bmp)") );
+
+        if( fileName.toAscii().data() != NULL )
+            cv::imwrite( fileName.toAscii().data(),image);
+    }
+}
+
 // FUNCIONES EXTRAS ========================================================================================================
 
 // Funcion que administra la visualizacion en la GUI
@@ -105,3 +116,4 @@ void MainWindow::muestraImagen(){
     // Reescalando
     ui->lb_imagen->resize(ui->lb_imagen->pixmap()->size() );
 }
+
