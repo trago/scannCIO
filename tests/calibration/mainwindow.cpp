@@ -2,8 +2,6 @@
 #include "ui_mainwindow.h"
 #include "iostream"
 
-#include "reconstructor.h"
-
 void mouse_call (int event, int x, int y, int flags, void *param);
 
 // FUNCIONES DEL FORMULARIO ================================================================================================
@@ -13,14 +11,20 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    Escaner.Camara.setDevice(1);
-    //Escaner.Camara.setResolution(640,480);
-    Escaner.Camara.setResolution(2592,1944);
-
     ui->setupUi(this);
     ui->bt_giroHor->setEnabled(false);
     ui->bt_transforma->setEnabled(false);
     ui->bt_procesa->setEnabled(false);
+    ui->bt_exportar->setEnabled(false);
+
+    // Control de apertura de imagen (RadioButtons)
+    ui->rb_archivo->setChecked(true);
+    ui->rb_dispositivo->setChecked(false);
+    ui->sb_dispositivos->setEnabled(false);
+
+    Escaner.Camara.setDevice(1);
+    //Escaner.Camara.setResolution(640,480);
+    Escaner.Camara.setResolution(2592,1944);
 }
 
 // Fucion del Evento Final (Al cerrar el formulario - Destructor)
@@ -49,9 +53,10 @@ void MainWindow::on_bt_abrir_clicked()
     }
 
     if(image.data){
-        //ui->bt_giroHor->setEnabled(true);
+        ui->bt_giroHor->setEnabled(true);
         ui->bt_transforma->setEnabled(true);
         ui->bt_procesa->setEnabled(true);
+        ui->bt_exportar->setEnabled(true);
         muestraImagen();
     }
 }
@@ -85,8 +90,20 @@ void MainWindow::on_bt_exportar_clicked()
         QString fileName = QFileDialog::getSaveFileName(this, tr("Exportar Imagen"), ".", tr("Image Files (*.png *.jpg *.jpeg *.bmp)") );
 
         if( fileName.toAscii().data() != NULL )
-            cv::imwrite( fileName.toAscii().data(),image);
+            cv::imwrite( fileName.toAscii().data(), image);
     }
+}
+
+void MainWindow::on_rb_archivo_clicked()
+{    
+    ui->rb_archivo->setChecked(true);
+    controlRadioButtons();
+}
+
+void MainWindow::on_rb_dispositivo_clicked()
+{
+    ui->rb_dispositivo->setChecked(true);
+    controlRadioButtons();
 }
 
 // FUNCIONES EXTRAS ========================================================================================================
@@ -115,5 +132,19 @@ void MainWindow::muestraImagen(){
 
     // Reescalando
     ui->lb_imagen->resize(ui->lb_imagen->pixmap()->size() );
+}
+
+// Funcion que controla los radiobutton de seleccion "Abrir Imagen"
+void MainWindow::controlRadioButtons(){
+    if( ui->rb_archivo->isChecked() ){
+        ui->rb_dispositivo->setChecked(false);
+        ui->sb_dispositivos->setEnabled(false);
+        Escaner.Camara.setDevice(-1);
+    }
+
+    if( ui->rb_dispositivo->isChecked() ){
+        ui->rb_dispositivo->setChecked(true);
+        ui->sb_dispositivos->setEnabled(true);
+    }
 }
 

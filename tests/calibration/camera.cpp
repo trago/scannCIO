@@ -4,11 +4,15 @@
 
 // Constructor (single)
 Cam::Cam(){
+    setCommonResolutions();
+    getDevicesInfo();
     device = 0;
 }
 
 // Constructor (with params)
 Cam::Cam( int dev, int res_width, int res_height ){
+    setCommonResolutions();
+    getDevicesInfo();
     device = dev;
     resolution[0] = res_width;
     resolution[1] = res_height;
@@ -26,6 +30,110 @@ void Cam::setResolution(int width, int height){
 }
 
 /* Operative Methods ===================================================================================== */
+
+void Cam::setCommonResolutions(){
+    c_resolutions[0].x = 160;
+    c_resolutions[0].y = 120;
+    c_resolutions[1].x = 176;
+    c_resolutions[1].y = 144;
+    c_resolutions[2].x = 320;
+    c_resolutions[2].y = 176;
+    c_resolutions[3].x = 320;
+    c_resolutions[3].y = 240;
+    c_resolutions[4].x = 320;
+    c_resolutions[4].y = 288;
+    c_resolutions[5].x = 432;
+    c_resolutions[5].y = 240;
+    c_resolutions[6].x = 544;
+    c_resolutions[6].y = 288;
+    c_resolutions[7].x = 640;
+    c_resolutions[7].y = 360;
+    c_resolutions[8].x = 640;
+    c_resolutions[8].y = 480;
+    c_resolutions[9].x = 752;
+    c_resolutions[9].y = 416;
+    c_resolutions[10].x = 800;
+    c_resolutions[10].y = 448;
+    c_resolutions[11].x = 800;
+    c_resolutions[11].y = 600;
+    c_resolutions[12].x = 864;
+    c_resolutions[12].y = 480;
+    c_resolutions[13].x = 960;
+    c_resolutions[13].y = 544;
+    c_resolutions[14].x = 960;
+    c_resolutions[14].y = 720;
+    c_resolutions[15].x = 1024;
+    c_resolutions[15].y = 576;
+    c_resolutions[16].x = 1184;
+    c_resolutions[16].y = 656;
+    c_resolutions[17].x = 1280;
+    c_resolutions[17].y = 720;
+    c_resolutions[18].x = 1280;
+    c_resolutions[18].y = 800;
+    c_resolutions[19].x = 1280;
+    c_resolutions[19].y = 960;
+    c_resolutions[20].x = 1280;
+    c_resolutions[20].y = 1024;
+    c_resolutions[21].x = 1392;
+    c_resolutions[21].y = 768;
+    c_resolutions[22].x = 1504;
+    c_resolutions[22].y = 832;
+    c_resolutions[23].x = 1600;
+    c_resolutions[23].y = 896;
+    c_resolutions[24].x = 1600;
+    c_resolutions[24].y = 1200;
+    c_resolutions[25].x = 1712;
+    c_resolutions[25].y = 960;
+    c_resolutions[26].x = 1792;
+    c_resolutions[26].y = 1008;
+    c_resolutions[27].x = 1920;
+    c_resolutions[27].y = 1080;
+    c_resolutions[28].x = 2048;
+    c_resolutions[28].y = 1536;
+    c_resolutions[29].x = 2592;
+    c_resolutions[29].y = 1944;
+
+    n_resolutions = 30;
+
+    // Get the devices resolutions
+    for(int i=0; i<n_resolutions; i++){
+        std::cout << i << ": " << c_resolutions[i].x << ", " << c_resolutions[i].y << std::endl;
+    }
+}
+
+void Cam::getDevicesInfo(){
+    devices devs;
+    bool next = true;
+    n_devices = 0;
+    devs.n_device = 0;
+
+    do{
+
+        // Create capture device
+        CvCapture* capture = cvCreateCameraCapture( devs.n_device );
+
+        // Check Device
+        if ( !capture ) {
+            next = false;
+        }
+
+        else{
+            n_devices++;
+
+            // Get the devices resolutions
+            for(int i=0; i<n_resolutions; i++){
+                std::cout << i << ": " << cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, c_resolutions[i].x ) << ", ";
+                std::cout << cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, c_resolutions[i].y ) << std::endl;
+            }
+
+            devs.n_device++;
+        }
+        cvReleaseCapture( &capture );
+
+    }while( next );
+
+    std::cout << n_devices << std::endl;
+}
 
 bool Cam::Capture( cv::Mat& imagen ){
     int keypress;

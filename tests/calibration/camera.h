@@ -13,11 +13,25 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
 
+#include <iostream>
+
 
 class Cam{
 
 public:
+    /** Number of devices available */
+    int n_devices;
+
+    /** Struct of devices information */
+    struct devices{
+        int n_device;
+        cv::Vec2i resolutions[];
+    };
+
+    /** Index of the device in use */
     int device;
+
+    /** Resolution used */
     cv::Vec2i resolution;
 
     /**
@@ -34,6 +48,12 @@ public:
     @author Juan Manuel Ruiz
     */
     Cam( int dev, int res_width, int res_height );
+
+    /**
+    Get information of the conected devices
+    @author Juan Manuel Ruiz
+    */
+    void getDevicesInfo(void);
 
     /**
     Device Setter
@@ -59,12 +79,22 @@ public:
     bool Capture( cv::Mat& image);
 
 private:
+    /** Array with common resolutions values */
+    cv::Point2f c_resolutions[];
+
+    /** Number of common resolutions values */
+    int n_resolutions;
+
+    /** Set the resolutions array with common values
+    @author Juan Manuel Ruiz
+    */
+    void setCommonResolutions(void);
 
     /**
-    Detecta los bordes de la hoja en la imagen
+    Detect borders in the sheet
 
-    @param[in] imagen de la cual se extraera la hoja.
-    @param[out] borde es el rectangulo que mejor define a la hoja en la imagen.
+    @param[in] image to detect sheet
+    @param[out] borde rectangle border to detect a sheet
 
     @author Juan Manuel Ruiz
    */
