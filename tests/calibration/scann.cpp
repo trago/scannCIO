@@ -7,7 +7,7 @@ using namespace std;
 void mouse_call (int event, int x, int y, int flags, void *param);
 
 Scanner::Scanner(){
-
+    Cam Camara();
 }
 
 /* Funciones Principales ================================================================================================ */

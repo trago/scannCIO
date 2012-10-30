@@ -6,7 +6,6 @@
 Cam::Cam(){
     setCommonResolutions();
     getDevicesInfo();
-    device = 0;
 }
 
 // Constructor (with params)
@@ -32,6 +31,7 @@ void Cam::setResolution(int width, int height){
 /* Operative Methods ===================================================================================== */
 
 void Cam::setCommonResolutions(){
+
     c_resolutions[0].x = 160;
     c_resolutions[0].y = 120;
     c_resolutions[1].x = 176;
@@ -93,46 +93,54 @@ void Cam::setCommonResolutions(){
     c_resolutions[29].x = 2592;
     c_resolutions[29].y = 1944;
 
-    n_resolutions = 30;
-
+    /*
     // Get the devices resolutions
-    for(int i=0; i<n_resolutions; i++){
+    for(int i=0; i<N_RESOLUTIONS; i++){
         std::cout << i << ": " << c_resolutions[i].x << ", " << c_resolutions[i].y << std::endl;
     }
+    */
 }
 
 void Cam::getDevicesInfo(){
-    devices devs;
-    bool next = true;
-    n_devices = 0;
-    devs.n_device = 0;
 
-    do{
+    // Determine the number of available devices
+    CvCapture *cap;
+    int n_devices = 0;
 
-        // Create capture device
-        CvCapture* capture = cvCreateCameraCapture( devs.n_device );
-
-        // Check Device
-        if ( !capture ) {
-            next = false;
+    while(1){
+        cap = cvCreateCameraCapture(n_devices++);
+        if (cap == NULL){
+            cvReleaseCapture(&cap);
+            break;
         }
+        cvReleaseCapture(&cap);
+    }
 
-        else{
-            n_devices++;
+    cvReleaseCapture(&cap);
+    n_devices--;
 
-            // Get the devices resolutions
-            for(int i=0; i<n_resolutions; i++){
-                std::cout << i << ": " << cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, c_resolutions[i].x ) << ", ";
-                std::cout << cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, c_resolutions[i].y ) << std::endl;
+    // Get the resolutions for each device
+    devices devs[n_devices];
+    for(int i=0; i<n_devices; i++){
+        devs[i].index_device = i;
+        devs[i].num_resolutions = 0;
+        cap = cvCreateCameraCapture(i);
+        for(int j=0; j<N_RESOLUTIONS; j++){
+            if( cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_WIDTH, c_resolutions[j].x ) &&
+                cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_HEIGHT, c_resolutions[j].y ) ){
+                devs[i].num_resolutions++;
+                devs[i].resolutions[j].x = c_resolutions[j].x;
+                devs[i].resolutions[j].y = c_resolutions[j].y;
             }
-
-            devs.n_device++;
         }
-        cvReleaseCapture( &capture );
+        cvReleaseCapture(&cap);
+    }
 
-    }while( next );
-
-    std::cout << n_devices << std::endl;
+    for(int i=0; i<n_devices; i++){
+        std::cout << "Device " << i << ": " << std::endl;
+        for(int j=0; j<devs[i].num_resolutions; j++)
+            std::cout << j << ": (" << devs[i].resolutions[j].x << ", " <<  devs[i].resolutions[j].y << ")"<< std::endl;
+    }
 }
 
 bool Cam::Capture( cv::Mat& imagen ){

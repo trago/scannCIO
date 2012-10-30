@@ -34,28 +34,3 @@ void reconstructor::setPoint(int x, int y){
     cont++;
 }
 
-void reconstructor::compute_matrix()
-{
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}

@@ -17,18 +17,8 @@ class reconstructor
         cv::Mat inImg, outImg, recImg;
         cv::Point2f points[4];
 
-        // Variables de la Matriz
-        float outX1, outX2, outX3, outX4, outY1, outY2, outY3, outY4;
-        int inHeight, inWidth, inStep, inChannels;
-        int outHeight, outWidth, outStep, outChannels;
-        uchar *inData;
-        uchar *outData;
-        int constru_Height, constru_Width, constru_Step, constru_Channels;
-        uchar *constru_Data;
-
         // Funciones
         void setPoint(int x, int y);
-        void compute_matrix();
 };
 
 #endif // RECONSTRUCTOR_H

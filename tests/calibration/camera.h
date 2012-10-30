@@ -7,6 +7,7 @@
 
 #ifndef CAM_H
 #define CAM_H
+#define N_RESOLUTIONS 30
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -24,8 +25,9 @@ public:
 
     /** Struct of devices information */
     struct devices{
-        int n_device;
-        cv::Vec2i resolutions[];
+        int index_device;
+        int num_resolutions;
+        cv::Point2i resolutions[N_RESOLUTIONS];
     };
 
     /** Index of the device in use */
@@ -79,16 +81,16 @@ public:
     bool Capture( cv::Mat& image);
 
 private:
-    /** Array with common resolutions values */
-    cv::Point2f c_resolutions[];
-
     /** Number of common resolutions values */
     int n_resolutions;
+
+    /** Array with common resolutions values */
+    cv::Point2i c_resolutions[N_RESOLUTIONS];
 
     /** Set the resolutions array with common values
     @author Juan Manuel Ruiz
     */
-    void setCommonResolutions(void);
+    void setCommonResolutions();
 
     /**
     Detect borders in the sheet

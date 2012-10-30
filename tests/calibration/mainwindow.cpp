@@ -22,9 +22,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->rb_dispositivo->setChecked(false);
     ui->sb_dispositivos->setEnabled(false);
 
-    Escaner.Camara.setDevice(1);
+    Escaner.Camara.setDevice(0);
     //Escaner.Camara.setResolution(640,480);
-    Escaner.Camara.setResolution(2592,1944);
+    Escaner.Camara.setResolution(2048,1536);
+    //Escaner.Camara.setResolution(2592,1944);
 }
 
 // Fucion del Evento Final (Al cerrar el formulario - Destructor)
