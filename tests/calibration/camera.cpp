@@ -126,18 +126,25 @@ void Cam::getDevicesInfo(){
         devs[i].num_resolutions = 0;
         cap = cvCreateCameraCapture(i);
         for(int j=0; j<N_RESOLUTIONS; j++){
-            if( cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_WIDTH, c_resolutions[j].x ) &&
-                cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_HEIGHT, c_resolutions[j].y ) ){
+            double resx = c_resolutions[j].x;
+            double resy = c_resolutions[j].y;
+
+            // Aqui la validacion no la esta efectuando, todas las resoluciones dan como resultado 0
+            std::cout << "(" << resx <<", "<< resy << "): " << "(" << cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_WIDTH, resx ) <<", "<< cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_HEIGHT, resy ) << "): " << std::endl;
+
+            if( cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_WIDTH, resx ) &&
+                cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_HEIGHT, resy ) ){
                 devs[i].num_resolutions++;
-                devs[i].resolutions[j].x = c_resolutions[j].x;
-                devs[i].resolutions[j].y = c_resolutions[j].y;
+                devs[i].resolutions[j].x = resx;
+                devs[i].resolutions[j].y = resy;
             }
+
         }
         cvReleaseCapture(&cap);
     }
 
     for(int i=0; i<n_devices; i++){
-        std::cout << "Device " << i << ": " << std::endl;
+        std::cout << "Device " << i << " Resolutions: " << std::endl;
         for(int j=0; j<devs[i].num_resolutions; j++)
             std::cout << j << ": (" << devs[i].resolutions[j].x << ", " <<  devs[i].resolutions[j].y << ")"<< std::endl;
     }

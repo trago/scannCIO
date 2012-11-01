@@ -27,7 +27,7 @@ public:
     struct devices{
         int index_device;
         int num_resolutions;
-        cv::Point2i resolutions[N_RESOLUTIONS];
+        cv::Point2f resolutions[N_RESOLUTIONS];
     };
 
     /** Index of the device in use */
@@ -85,7 +85,7 @@ private:
     int n_resolutions;
 
     /** Array with common resolutions values */
-    cv::Point2i c_resolutions[N_RESOLUTIONS];
+    cv::Point2f c_resolutions[N_RESOLUTIONS];
 
     /** Set the resolutions array with common values
     @author Juan Manuel Ruiz
