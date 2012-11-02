@@ -34,7 +34,7 @@ public:
     int device;
 
     /** Resolution used */
-    cv::Vec2i resolution;
+    cv::Point2f resolution;
 
     /**
     Constructor (single)

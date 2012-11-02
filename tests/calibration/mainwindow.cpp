@@ -20,11 +20,15 @@ MainWindow::MainWindow(QWidget *parent) :
     // Control de apertura de imagen (RadioButtons)
     ui->rb_archivo->setChecked(true);
     ui->rb_dispositivo->setChecked(false);
-    ui->sb_dispositivos->setEnabled(false);
+    ui->cb_dispositivos->setEnabled(false);
+    ui->cb_resoluciones->setEnabled(false);
 
-    Escaner.Camara.setDevice(0);
+    // Control de los combobox
+    llenaCombos();
+
+    //Escaner.Camara.setDevice(0);
     //Escaner.Camara.setResolution(640,480);
-    Escaner.Camara.setResolution(2048,1536);
+    //Escaner.Camara.setResolution(2048,1536);
     //Escaner.Camara.setResolution(2592,1944);
 }
 
@@ -139,13 +143,34 @@ void MainWindow::muestraImagen(){
 void MainWindow::controlRadioButtons(){
     if( ui->rb_archivo->isChecked() ){
         ui->rb_dispositivo->setChecked(false);
-        ui->sb_dispositivos->setEnabled(false);
+        ui->cb_dispositivos->setEnabled(false);
+        ui->cb_resoluciones->setEnabled(false);
+
         Escaner.Camara.setDevice(-1);
     }
 
     if( ui->rb_dispositivo->isChecked() ){
         ui->rb_dispositivo->setChecked(true);
-        ui->sb_dispositivos->setEnabled(true);
+        ui->cb_dispositivos->setEnabled(true);
+        ui->cb_resoluciones->setEnabled(true);
     }
 }
 
+void MainWindow::llenaCombos(){
+    ui->cb_dispositivos->setMaxCount(Escaner.Camara.n_devices);
+
+    for(int i=0; i<Escaner.Camara.n_devices; i++){
+        std::stringstream str;
+        str << i;
+        ui->cb_dispositivos->addItem(str.str().c_str());
+    }
+
+    ui->cb_resoluciones->setMaxCount(3);
+    ui->cb_resoluciones->addItem("X");
+    ui->cb_resoluciones->addItem("Y");
+    ui->cb_resoluciones->addItem("Z");
+}
+
+void MainWindow::on_cb_resolucion_currentIndexChanged(const QString &arg1){
+
+}

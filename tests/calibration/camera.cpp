@@ -6,15 +6,16 @@
 Cam::Cam(){
     setCommonResolutions();
     getDevicesInfo();
+    setDevice(0);
 }
 
 // Constructor (with params)
 Cam::Cam( int dev, int res_width, int res_height ){
     setCommonResolutions();
     getDevicesInfo();
-    device = dev;
-    resolution[0] = res_width;
-    resolution[1] = res_height;
+    setDevice(dev);
+    resolution.x = res_width;
+    resolution.y = res_height;
 }
 
 /* Setters =============================================================================================== */
@@ -24,8 +25,8 @@ void Cam::setDevice(int dev){
 }
 
 void Cam::setResolution(int width, int height){
-    resolution[0] = width;
-    resolution[1] = height;
+    resolution.x = width;
+    resolution.y = height;
 }
 
 /* Operative Methods ===================================================================================== */
@@ -40,7 +41,7 @@ void Cam::setCommonResolutions(){
     c_resolutions[2].y = 176;
     c_resolutions[3].x = 320;
     c_resolutions[3].y = 240;
-    c_resolutions[4].x = 320;
+    c_resolutions[4].x = 352;
     c_resolutions[4].y = 288;
     c_resolutions[5].x = 432;
     c_resolutions[5].y = 240;
@@ -126,27 +127,19 @@ void Cam::getDevicesInfo(){
         devs[i].num_resolutions = 0;
         cap = cvCreateCameraCapture(i);
         for(int j=0; j<N_RESOLUTIONS; j++){
-            double resx = c_resolutions[j].x;
-            double resy = c_resolutions[j].y;
+            // Set actual values of resolution
+            cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_WIDTH, c_resolutions[j].x );
+            cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_HEIGHT, c_resolutions[j].y );
 
-            // Aqui la validacion no la esta efectuando, todas las resoluciones dan como resultado 0
-            std::cout << "(" << resx <<", "<< resy << "): " << "(" << cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_WIDTH, resx ) <<", "<< cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_HEIGHT, resy ) << "): " << std::endl;
-
-            if( cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_WIDTH, resx ) &&
-                cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_HEIGHT, resy ) ){
+            // Compare the actual resolution value with the last accepted value (Width and Height)
+            if( c_resolutions[j].x == cvGetCaptureProperty(cap, CV_CAP_PROP_FRAME_WIDTH)
+                && c_resolutions[j].y == cvGetCaptureProperty(cap, CV_CAP_PROP_FRAME_HEIGHT) ){
+                devs[i].resolutions[devs[i].num_resolutions].x = cvGetCaptureProperty(cap, CV_CAP_PROP_FRAME_WIDTH);
+                devs[i].resolutions[devs[i].num_resolutions].y = cvGetCaptureProperty(cap, CV_CAP_PROP_FRAME_HEIGHT);
                 devs[i].num_resolutions++;
-                devs[i].resolutions[j].x = resx;
-                devs[i].resolutions[j].y = resy;
             }
-
         }
         cvReleaseCapture(&cap);
-    }
-
-    for(int i=0; i<n_devices; i++){
-        std::cout << "Device " << i << " Resolutions: " << std::endl;
-        for(int j=0; j<devs[i].num_resolutions; j++)
-            std::cout << j << ": (" << devs[i].resolutions[j].x << ", " <<  devs[i].resolutions[j].y << ")"<< std::endl;
     }
 }
 
@@ -169,8 +162,8 @@ bool Cam::Capture( cv::Mat& imagen ){
     }
 
     // Set Resolution (For the 10Mpx Camera use 2592x1944)
-    cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, resolution[0] );
-    cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, resolution[1] );
+    cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, resolution.x );
+    cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, resolution.y );
     // For other camera manipulable parameters check documentation: cvSetCaptureProperty
 
     // Stream Window

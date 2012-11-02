@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
-    <height>768</height>
+    <width>1080</width>
+    <height>757</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,122 +20,229 @@
    <string>Ventana Principal</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="bt_abrir">
+   <widget class="QTabWidget" name="tb_menu">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>85</width>
-      <height>27</height>
+      <width>131</width>
+      <height>301</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Abrir Imagen</string>
+    <property name="currentIndex">
+     <number>0</number>
     </property>
+    <widget class="QWidget" name="t_abrir">
+     <attribute name="title">
+      <string>Imagen</string>
+     </attribute>
+     <widget class="QFrame" name="frame">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>111</width>
+        <height>251</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QPushButton" name="bt_abrir">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>215</y>
+         <width>91</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Obtener</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="rb_archivo">
+       <property name="geometry">
+        <rect>
+         <x>8</x>
+         <y>30</y>
+         <width>92</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Archivo</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="rb_dispositivo">
+       <property name="geometry">
+        <rect>
+         <x>8</x>
+         <y>50</y>
+         <width>92</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Dispositivo</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lb_origen">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>91</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Origen:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lb_resolucion">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>103</y>
+         <width>91</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Resolución:</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="cb_resoluciones">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>120</y>
+         <width>91</width>
+         <height>24</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="cb_dispositivos">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>70</y>
+         <width>61</width>
+         <height>24</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tb_edicion">
+     <attribute name="title">
+      <string>Edicion</string>
+     </attribute>
+     <widget class="QFrame" name="frame_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>111</width>
+        <height>251</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QPushButton" name="bt_transforma">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>91</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Transforma</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="bt_giroHor">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>91</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Giro Horizontal</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="bt_procesa">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>70</y>
+         <width>91</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Procesado</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="bt_exportar">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>215</y>
+         <width>91</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Exportar</string>
+       </property>
+      </widget>
+     </widget>
+    </widget>
    </widget>
-   <widget class="QPushButton" name="bt_giroHor">
+   <widget class="QFrame" name="fr_imagen">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>110</y>
-      <width>85</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Giro Horizontal</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lb_imagen">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
+      <x>150</x>
       <y>0</y>
-      <width>900</width>
-      <height>675</height>
+      <width>921</width>
+      <height>691</height>
      </rect>
     </property>
-    <property name="text">
-     <string>.</string>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
     </property>
-   </widget>
-   <widget class="QPushButton" name="bt_transforma">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>140</y>
-      <width>85</width>
-      <height>27</height>
-     </rect>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
     </property>
-    <property name="text">
-     <string>Transforma</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="bt_procesa">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>170</y>
-      <width>85</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Procesado</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="bt_exportar">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>200</y>
-      <width>85</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Exportar</string>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="sb_dispositivos">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>80</y>
-      <width>51</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="rb_archivo">
-    <property name="geometry">
-     <rect>
-      <x>11</x>
-      <y>40</y>
-      <width>92</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Archivo</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="rb_dispositivo">
-    <property name="geometry">
-     <rect>
-      <x>11</x>
-      <y>60</y>
-      <width>92</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Dispositivo</string>
-    </property>
+    <widget class="QLabel" name="lb_imagen">
+     <property name="geometry">
+      <rect>
+       <x>9</x>
+       <y>7</y>
+       <width>900</width>
+       <height>675</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>.</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -143,7 +250,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1024</width>
+     <width>1080</width>
      <height>22</height>
     </rect>
    </property>
