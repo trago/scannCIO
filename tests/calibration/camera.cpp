@@ -6,17 +6,18 @@
 Cam::Cam(){
     setCommonResolutions();
     getNumberDevices();
-    devices devs[n_devices];
-    getDevicesInfo(devs);
+    //devices devs[n_devices];
+    //getDevicesInfo(devs);
     setDevice(0);
+    getDeviceInfo(0);
 }
 
 // Constructor (with params)
 Cam::Cam( int dev, int res_width, int res_height ){
-    setCommonResolutions();
-    getNumberDevices();
-    devices devs[n_devices];
-    getDevicesInfo(devs);
+    //setCommonResolutions();
+    //getNumberDevices();
+    //devices devs[n_devices];
+    //getDevicesInfo(devs);
     setDevice(dev);
     resolution.x = res_width;
     resolution.y = res_height;
@@ -124,7 +125,26 @@ void Cam::getNumberDevices(){
     n_devices--;
 }
 
-void Cam::getDeviceInfo(struct devices *devs){
+// Get the resolutions of a device
+void Cam::getDeviceInfo(int d){
+    CvCapture *cap = cvCreateCameraCapture(d);
+    for(int i=0; i<N_RESOLUTIONS; i++){
+        // Set actual values of resolution
+        cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_WIDTH, c_resolutions[i].x );
+        cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_HEIGHT, c_resolutions[i].y );
+
+        // Compare the actual resolution value with the last accepted value (Width and Height)
+        if( c_resolutions[i].x == cvGetCaptureProperty(cap, CV_CAP_PROP_FRAME_WIDTH)
+            && c_resolutions[i].y == cvGetCaptureProperty(cap, CV_CAP_PROP_FRAME_HEIGHT) ){
+            resolutions[num_resolutions].x = cvGetCaptureProperty(cap, CV_CAP_PROP_FRAME_WIDTH);
+            resolutions[num_resolutions].y = cvGetCaptureProperty(cap, CV_CAP_PROP_FRAME_HEIGHT);
+            num_resolutions++;
+        }
+    }
+    cvReleaseCapture(&cap);
+}
+
+void Cam::getDevicesInfo(struct devices *devs){
 
     // Get the resolutions for each device
     for(int i=0; i<n_devices; i++){

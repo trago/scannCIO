@@ -173,8 +173,14 @@ void MainWindow::llenaCombos(){
     llenaComboResolucion(disp);
 }
 
-void MainWindow::llenaComboResolucion(int device ){
-
+void MainWindow::llenaComboResolucion(int disp ){
+    Escaner.Camara.getDeviceInfo(disp);
+    // Llenado de combo
+    for(int i=0; i<Escaner.Camara.num_resolutions; i++){
+        std::stringstream str;
+        str << Escaner.Camara.resolutions[i].x << " x " << Escaner.Camara.resolutions[i].y;
+        ui->cb_resoluciones->addItem(str.str().c_str());
+    }
 }
 
 void MainWindow::on_cb_resolucion_currentIndexChanged(const QString &arg1){

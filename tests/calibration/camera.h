@@ -23,6 +23,13 @@ public:
     /** Number of devices available */
     int n_devices;
 
+    /** Number of resolutions available */
+    int num_resolutions;
+
+    /** Resolutions available */
+    cv::Point2f resolutions[N_RESOLUTIONS];
+
+
     /** Struct of devices information */
     struct devices{
         int index_device;
@@ -56,6 +63,12 @@ public:
     @author Juan Manuel Ruiz
     */
     void getNumberDevices(void);
+
+    /**
+    Get information of a device
+    @author Juan Manuel Ruiz
+    */
+    void getDeviceInfo(int d);
 
     /**
     Get information of the conected devices
