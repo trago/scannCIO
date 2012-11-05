@@ -52,10 +52,16 @@ public:
     Cam( int dev, int res_width, int res_height );
 
     /**
+    Get number of conected devices
+    @author Juan Manuel Ruiz
+    */
+    void getNumberDevices(void);
+
+    /**
     Get information of the conected devices
     @author Juan Manuel Ruiz
     */
-    void getDevicesInfo(void);
+    void getDevicesInfo(struct devices *devs);
 
     /**
     Device Setter

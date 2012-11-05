@@ -5,14 +5,18 @@
 // Constructor (single)
 Cam::Cam(){
     setCommonResolutions();
-    getDevicesInfo();
+    getNumberDevices();
+    devices devs[n_devices];
+    getDevicesInfo(devs);
     setDevice(0);
 }
 
 // Constructor (with params)
 Cam::Cam( int dev, int res_width, int res_height ){
     setCommonResolutions();
-    getDevicesInfo();
+    getNumberDevices();
+    devices devs[n_devices];
+    getDevicesInfo(devs);
     setDevice(dev);
     resolution.x = res_width;
     resolution.y = res_height;
@@ -102,11 +106,10 @@ void Cam::setCommonResolutions(){
     */
 }
 
-void Cam::getDevicesInfo(){
-
+void Cam::getNumberDevices(){
     // Determine the number of available devices
     CvCapture *cap;
-    int n_devices = 0;
+    n_devices = 0;
 
     while(1){
         cap = cvCreateCameraCapture(n_devices++);
@@ -119,13 +122,15 @@ void Cam::getDevicesInfo(){
 
     cvReleaseCapture(&cap);
     n_devices--;
+}
+
+void Cam::getDeviceInfo(struct devices *devs){
 
     // Get the resolutions for each device
-    devices devs[n_devices];
     for(int i=0; i<n_devices; i++){
         devs[i].index_device = i;
         devs[i].num_resolutions = 0;
-        cap = cvCreateCameraCapture(i);
+        CvCapture *cap = cvCreateCameraCapture(i);
         for(int j=0; j<N_RESOLUTIONS; j++){
             // Set actual values of resolution
             cvSetCaptureProperty( cap, CV_CAP_PROP_FRAME_WIDTH, c_resolutions[j].x );

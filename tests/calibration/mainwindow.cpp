@@ -159,18 +159,24 @@ void MainWindow::controlRadioButtons(){
 void MainWindow::llenaCombos(){
     ui->cb_dispositivos->setMaxCount(Escaner.Camara.n_devices);
 
+    std::cout << Escaner.Camara.n_devices << std::endl;
+
     for(int i=0; i<Escaner.Camara.n_devices; i++){
         std::stringstream str;
         str << i;
         ui->cb_dispositivos->addItem(str.str().c_str());
+
     }
 
-    ui->cb_resoluciones->setMaxCount(3);
-    ui->cb_resoluciones->addItem("X");
-    ui->cb_resoluciones->addItem("Y");
-    ui->cb_resoluciones->addItem("Z");
+    int disp = ui->cb_dispositivos->currentText().toInt();
+    Escaner.Camara.device = disp;
+    llenaComboResolucion(disp);
+}
+
+void MainWindow::llenaComboResolucion(int device ){
+
 }
 
 void MainWindow::on_cb_resolucion_currentIndexChanged(const QString &arg1){
-
+    std::cout << ui->cb_dispositivos->currentText().toStdString() << std::endl;
 }

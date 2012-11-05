@@ -42,6 +42,7 @@ private:
     void muestraImagen();
     void controlRadioButtons();
     void llenaCombos();
+    void llenaComboResolucion(int device );
 };
 
 #endif // MAINWINDOW_H
