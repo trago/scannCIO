@@ -32,7 +32,8 @@ private slots:
     void on_rb_archivo_clicked();
     void on_rb_dispositivo_clicked();
 
-    void on_cb_resolucion_currentIndexChanged(const QString &arg1);
+    void on_cb_dispositivos_currentIndexChanged(int index);
+    void on_cb_resoluciones_currentIndexChanged(int index);
 
 private:
     Scanner Escaner;
