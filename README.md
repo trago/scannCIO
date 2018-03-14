@@ -1,4 +1,4 @@
 scannCIO
 ========
 
-Aplicasion para usar una camara como scanner
+Aplicacion para usar una camara como scanner
